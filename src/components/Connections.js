@@ -48,7 +48,9 @@ const Connections = () => {
                                 render: text => <a href={`https://www.google.com/search?q=${text}`}
                                                    target="_blank">{text}</a>,
                                 sorter: (a, b) => {
-                                    return a.position.localeCompare(b.position)
+                                    if (a.position !== undefined && b.position !== undefined) {
+                                        return a.position.localeCompare(b.position)
+                                    }
                                 },
                             },
                             {
@@ -58,7 +60,9 @@ const Connections = () => {
                                 render: text => <a href={`https://www.google.com/search?q=${text}`}
                                                    target="_blank">{text}</a>,
                                 sorter: (a, b) => {
-                                    return a.company.localeCompare(b.company)
+                                    if (a.position !== undefined && b.position !== undefined) {
+                                        return a.position.localeCompare(b.position)
+                                    }
                                 },
                             },
                         ]

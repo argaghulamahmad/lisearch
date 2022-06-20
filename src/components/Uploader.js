@@ -25,21 +25,29 @@ const Uploader = () => {
             let connectionStub = Object.assign({}, ...camelCaseKeys.map(key => ({[key]: ""})));
 
             return csv.data.reduce((accumulator, currentValue, idx) => {
-                const clone = {...connectionStub};
+                if (currentValue[0] !== undefined || currentValue[1] !== undefined) {
+                    if (currentValue[0] !== "" || currentValue[1] !== "") {
+                        const clone = {...connectionStub};
 
-                clone.idx = idx
+                        clone.idx = idx
 
-                clone.firstName = currentValue[0]
-                clone.lastName = currentValue[1]
+                        clone.firstName = currentValue[0]
+                        clone.lastName = currentValue[1]
 
-                clone.emailAddress = currentValue[2]
-                clone.company = currentValue[3]
-                clone.position = currentValue[4]
-                clone.connectedOn = currentValue[5]
+                        clone.emailAddress = currentValue[2]
+                        clone.company = currentValue[3]
+                        clone.position = currentValue[4]
+                        clone.connectedOn = currentValue[5]
 
-                clone.fullName = currentValue[0] + ' ' + currentValue[1]
+                        clone.fullName = currentValue[0] + ' ' + currentValue[1]
 
-                return [...accumulator, clone]
+                        return [...accumulator, clone]
+                    } else {
+                        return [...accumulator]
+                    }
+                } else {
+                    return [...accumulator]
+                }
             }, []);
         };
 
@@ -78,8 +86,12 @@ const Uploader = () => {
                                                 const companies = generateCompaniesDataList(connections);
                                                 const connectionsAtCompany = generateMapCompanyConnections(companies, connections);
 
-                                                localStorage.setItem('connections', JSON.stringify(connections));
-                                                localStorage.setItem('companies', JSON.stringify(companies));
+                                                localStorage.setItem('connections', JSON.stringify(
+                                                    connections.filter((row) => row.company !== undefined)
+                                                ));
+                                                localStorage.setItem('companies', JSON.stringify(
+                                                    companies.filter((row) => row.company !== undefined)
+                                                ));
                                                 localStorage.setItem('connectionsAtCompany', JSON.stringify(
                                                     connectionsAtCompany.filter((row) => row.company !== undefined)
                                                 ));
