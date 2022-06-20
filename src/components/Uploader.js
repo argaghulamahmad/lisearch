@@ -70,6 +70,8 @@ const Uploader = () => {
                                                 const companies = generateCompaniesDataList(connections);
 
                                                 localStorage.setItem('connections', JSON.stringify(connections));
+                                                localStorage.setItem('companies', JSON.stringify(companies));
+
                                                 notification.success({
                                                     message: 'File Connections.csv valid',
                                                     description: 'Connections record updated!',
