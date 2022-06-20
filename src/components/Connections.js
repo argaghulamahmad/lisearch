@@ -20,7 +20,16 @@ const Connections = () => {
                     lastUpdateAt !== "" ? null :
                         <Text type="secondary" level={5}> Last updated at {lastUpdateAt}.</Text>
                 }
-                <Table style={{padding: "0 5% 0 5%"}} columns={
+                <Table
+                    showHeader={true}
+                    rowKey="idx"
+                    pagination={{
+                        defaultPageSize: 100,
+                        showSizeChanger: true,
+                        pageSizeOptions: ['10', '50', '100', '200']
+                    }}
+                    style={{padding: "0 5% 0 5%"}}
+                    columns={
                     [
                         {
                             title: 'Full Name',
