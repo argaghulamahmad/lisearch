@@ -1,6 +1,7 @@
 import './App.css';
 
-import Data from "./components/Data";
+import Connections from "./components/Connections";
+import Companies from "./components/Companies";
 import Uploader from './components/Uploader';
 import {BrowserRouter as Router, Link, Route, Switch} from "react-router-dom";
 import {Divider, Menu} from "antd";
@@ -17,8 +18,8 @@ function App() {
                   <Menu.Item key="home">
                     <Link to="/">Connections</Link>
                   </Menu.Item>
-                  <Menu.Item key="home">
-                    <Link to="/">Companies</Link>
+                  <Menu.Item key="companies">
+                    <Link to="/companies">Companies</Link>
                   </Menu.Item>
                   <Menu.Item key="uploadFile">
                     <Link to="/upload">Upload</Link>
@@ -28,7 +29,10 @@ function App() {
 
               <Switch>
                 <Route exact path="/">
-                  <Data/>
+                  <Connections/>
+                </Route>
+                <Route exact path="/companies">
+                  <Companies/>
                 </Route>
                 <Route exact path="/upload">
                   <Uploader/>

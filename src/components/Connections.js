@@ -1,9 +1,9 @@
 import {useEffect, useState} from "react";
-import {BackTop, Card, Divider, List, Select, Space, Table} from "antd";
+import {BackTop, Card, Table} from "antd";
 import Text from "antd/es/typography/Text";
 import Uploader from "./Uploader";
 
-const Data = () => {
+const Connections = () => {
     const [lastUpdateAt, setLastUpdateAt] = useState("");
     const [connections, setConnections] = useState([]);
 
@@ -11,7 +11,6 @@ const Data = () => {
         setLastUpdateAt(localStorage.getItem('lastUpdateAt'))
 
         setConnections(JSON.parse(localStorage.getItem('connections')))
-
     }, []);
 
 
@@ -41,4 +40,4 @@ const Data = () => {
     );
 }
 
-export default Data;
+export default Connections;

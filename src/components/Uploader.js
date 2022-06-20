@@ -10,7 +10,7 @@ const Uploader = () => {
         function generateCompaniesDataList(connections) {
             return [...new Set(connections.map((item) => {
                 return item.company
-            }))];
+            }).filter((x) => x !== "").filter((x, i, a) => a.indexOf(x) === i))];
         }
 
         function generateConnectionsDataList(csv) {
