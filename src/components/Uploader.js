@@ -87,13 +87,13 @@ const Uploader = () => {
                                                 const connectionsAtCompany = generateMapCompanyConnections(companies, connections);
 
                                                 localStorage.setItem('connections', JSON.stringify(
-                                                    connections.filter((row) => row.company !== undefined)
+                                                    connections
                                                 ));
                                                 localStorage.setItem('companies', JSON.stringify(
-                                                    companies.filter((row) => row.company !== undefined)
+                                                    companies
                                                 ));
                                                 localStorage.setItem('connectionsAtCompany', JSON.stringify(
-                                                    connectionsAtCompany.filter((row) => row.company !== undefined)
+                                                    connectionsAtCompany
                                                 ));
 
                                                 notification.success({
