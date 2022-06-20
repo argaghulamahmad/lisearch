@@ -40,6 +40,16 @@ const Connections = () => {
                                 sorter: (a, b) => {
                                     return a.company.localeCompare(b.company)
                                 },
+                            },
+                            {
+                                title: 'Total Connections',
+                                key: 'totalConnections',
+                                render: record => {
+                                    record.connections.length
+                                },
+                                sorter: (a, b) => {
+                                    return a.company.localeCompare(b.company)
+                                },
                             }
                         ]
                     }
