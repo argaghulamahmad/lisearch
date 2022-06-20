@@ -12,7 +12,7 @@ const Uploader = () => {
         }).filter((x) => x !== "").filter((x, i, a) => a.indexOf(x) === i))];
 
         const generateConnectionsDataList = csv => {
-            let csvKeys = csv.data[0];
+            let csvKeys = csv.data.shift();
             let camelCaseKeys = csvKeys.map((key) => {
                 return key.replace(/\s(.)/g, function ($1) {
                     return $1.toUpperCase();
@@ -23,10 +23,8 @@ const Uploader = () => {
                     });
             });
             let connectionStub = Object.assign({}, ...camelCaseKeys.map(key => ({[key]: ""})));
-            const connections = []
 
-            const csvDataWithoutKeys = csv.data.shift().data
-            csvDataWithoutKeys.reduce((accumulator, currentValue) => {
+            const connections = csv.data.reduce((accumulator, currentValue) => {
                 const clone = {...connectionStub};
 
                 clone.firstName = currentValue[0]
@@ -39,8 +37,8 @@ const Uploader = () => {
 
                 clone.fullName = currentValue[0] + ' ' + currentValue[1]
 
-                return [...connections, clone]
-            })
+                return [...accumulator, clone]
+            }, [])
 
             return connections;
         };
