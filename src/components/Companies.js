@@ -42,7 +42,20 @@ const Connections = () => {
                     }
                     expandable={{
                         expandedRowRender: record => <div>
-
+                            <Table
+                                columns={
+                                    [
+                                        {
+                                            title: 'Full Name',
+                                            dataIndex: 'fullName',
+                                            key: 'fullName',
+                                            render: text => <a href={`https://www.google.com/search?q=${text}`}
+                                                               target="_blank">{text}</a>,
+                                        }
+                                    ]
+                                }
+                                dataSource={record.connections}
+                            />
                         </div>,
                         rowExpandable: record => record.connections.length !== 0,
                     }}
