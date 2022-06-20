@@ -37,13 +37,15 @@ const Uploader = () => {
                                             const connections = []
 
                                             for (let i = 1; i < csv.data.length; i++) {
-                                                const clone = { ...connection };
+                                                const clone = {...connection};
                                                 clone.firstName = csv.data[i][0]
                                                 clone.lastName = csv.data[i][1]
                                                 clone.emailAddress = csv.data[i][2]
                                                 clone.company = csv.data[i][3]
                                                 clone.position = csv.data[i][4]
                                                 clone.connectedOn = csv.data[i][5]
+
+                                                clone.fullName = csv.data[i][0] + ' ' + csv.data[i][1]
 
                                                 connections.push(clone)
                                             }

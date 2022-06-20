@@ -1,5 +1,5 @@
 import {useEffect, useState} from "react";
-import {BackTop, Card, Divider, List, Select, Space} from "antd";
+import {BackTop, Card, Divider, List, Select, Space, Table} from "antd";
 import Text from "antd/es/typography/Text";
 import Uploader from "./Uploader";
 
@@ -24,15 +24,59 @@ const Data = () => {
                     lastUpdateAt !== "" ? null :
                         <Text type="secondary" level={5}> Last updated at {lastUpdateAt}.</Text>
                 }
-                <List style={{padding: "0 5% 0 5%"}} dataSource={connections}
-                      renderItem={connection => (
-                          <List.Item>
-                              <List.Item.Meta
-                                  title={<a href={`https://instagram.com/${`${connection.firstName} ${connection.lastName}`}`} rel="noreferrer nofollow"
-                                            target="_blank">{`${connection.firstName} ${connection.lastName}`}</a>}
-                              />
-                          </List.Item>
-                      )}/>
+                <Table style={{padding: "0 5% 0 5%"}} columns={
+                    [
+                        {
+                            title: 'Full Name',
+                            dataIndex: 'fullName',
+                            key: 'fullName',
+                            render: text => <a>{text}</a>,
+                        },
+
+
+                        // {
+                        //     title: 'Age',
+                        //     dataIndex: 'age',
+                        //     key: 'age',
+                        // },
+                        // {
+                        //     title: 'Address',
+                        //     dataIndex: 'address',
+                        //     key: 'address',
+                        // },
+                        // {
+                        //     title: 'Tags',
+                        //     key: 'tags',
+                        //     dataIndex: 'tags',
+                        //     render: (_, {tags}) => (
+                        //         <>
+                        //             {tags.map(tag => {
+                        //                 let color = tag.length > 5 ? 'geekblue' : 'green';
+                        //                 if (tag === 'loser') {
+                        //                     color = 'volcano';
+                        //                 }
+                        //                 return (
+                        //                     <Tag color={color} key={tag}>
+                        //                         {tag.toUpperCase()}
+                        //                     </Tag>
+                        //                 );
+                        //             })}
+                        //         </>
+                        //     ),
+                        // },
+                        // {
+                        //     title: 'Action',
+                        //     key: 'action',
+                        //     render: (_, record) => (
+                        //         <Space size="middle">
+                        //             <a>Invite {record.name}</a>
+                        //             <a>Delete</a>
+                        //         </Space>
+                        //     ),
+                        // }
+                    ]
+                }
+               dataSource={connections}/>
             </Card>
 
             <BackTop/>
