@@ -43,8 +43,8 @@ const Uploader = () => {
             }, []);
         };
 
-        const generateMapCompanyConnections = (companies, connections, idx) => {
-            return companies.reduce((accumulator, currentValue) => {
+        const generateMapCompanyConnections = (companies, connections) => {
+            return companies.reduce((accumulator, currentValue, idx) => {
                 let connectionsAtCompany = connections.filter((connection) => {
                     return connection.company === currentValue
                 })

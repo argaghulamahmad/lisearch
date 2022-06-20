@@ -20,24 +20,33 @@ const Connections = () => {
                     lastUpdateAt !== "" ? null :
                         <Text type="secondary" level={5}> Last updated at {lastUpdateAt}.</Text>
                 }
-                <Table style={{padding: "0 5% 0 5%"}} rowkey={(record) => record.idx} columns={
-                    [
-                        {
-                            title: 'Company',
-                            dataIndex: 'company',
-                            key: 'company',
-                            render: text => <a href={`https://www.google.com/search?q=${text}`}
-                                               target="_blank">{text}</a>,
-                        }
-                    ]
-                }
-                       expandable={{
-                           expandedRowRender: record => <div>
+                <Table
+                    showHeader={true}
+                    rowKey="idx"
+                    pagination={{
+                        defaultPageSize: 100,
+                        showSizeChanger: true,
+                        pageSizeOptions: ['10', '50', '100', '200']
+                    }}
+                    style={{padding: "0 5% 0 5%"}}
+                    columns={
+                        [
+                            {
+                                title: 'Company',
+                                dataIndex: 'company',
+                                key: 'company',
+                                render: text => <a href={`https://www.google.com/search?q=${text}`}
+                                                   target="_blank">{text}</a>,
+                            }
+                        ]
+                    }
+                    expandable={{
+                        expandedRowRender: record => <div>
 
-                           </div>,
-                           rowExpandable: record => record.connections.length !== 0,
-                       }}
-                       dataSource={companies}
+                        </div>,
+                        rowExpandable: record => record.connections.length !== 0,
+                    }}
+                    dataSource={companies}
                 />
             </Card>
 
