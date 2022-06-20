@@ -1,24 +1,40 @@
-import logo from './logo.svg';
 import './App.css';
+
+import Data from "./components/Data";
+import Uploader from './components/Uploader';
+import {BrowserRouter as Router, Link, Route, Switch} from "react-router-dom";
+import {Divider, Menu} from "antd";
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+      <div className="App">
+        <Router>
+          <div className="App">
+            <div className="AppContent">
+              <Divider orientation="center">
+                <h1>Li Search</h1>
+                <Menu mode="horizontal">
+                  <Menu.Item key="home">
+                    <Link to="/">Home</Link>
+                  </Menu.Item>
+                  <Menu.Item key="uploadFile">
+                    <Link to="/upload">Upload</Link>
+                  </Menu.Item>
+                </Menu>
+              </Divider>
+
+              <Switch>
+                <Route exact path="/">
+                  <Data/>
+                </Route>
+                <Route exact path="/upload">
+                  <Uploader/>
+                </Route>
+              </Switch>
+            </div>
+          </div>
+        </Router>
+      </div>
   );
 }
 
