@@ -63,7 +63,7 @@ const Connections = () => {
                                 dataSource={record.connections}
                             />
                         </div>,
-                        rowExpandable: record => record.connections.length !== 0,
+                        rowExpandable: record => record.connections.length !== 0 && record.company === undefined,
                     }}
                     dataSource={companies}
                 />
