@@ -9,7 +9,6 @@ const Connections = () => {
 
     useEffect(() => {
         setLastUpdateAt(localStorage.getItem('lastUpdateAt'))
-
         setConnections(JSON.parse(localStorage.getItem('connections')))
     }, []);
 

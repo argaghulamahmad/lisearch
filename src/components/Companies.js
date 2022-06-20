@@ -9,8 +9,7 @@ const Connections = () => {
 
     useEffect(() => {
         setLastUpdateAt(localStorage.getItem('lastUpdateAt'))
-
-        setCompanies(JSON.parse(localStorage.getItem('companies')))
+        setCompanies(JSON.parse(localStorage.getItem('connectionsAtCompany')))
     }, []);
 
 
@@ -25,6 +24,7 @@ const Connections = () => {
                     [
                         {
                             title: 'Company',
+                            dataIndex: 'company',
                             key: 'company',
                             render: text => <a href={`https://www.google.com/search?q=${text}`}
                                                target="_blank">{text}</a>,
