@@ -7,8 +7,6 @@ const Data = () => {
     const [lastUpdateAt, setLastUpdateAt] = useState("");
     const [connections, setConnections] = useState([]);
 
-    const {Option} = Select;
-
     useEffect(() => {
         setLastUpdateAt(localStorage.getItem('lastUpdateAt'))
 

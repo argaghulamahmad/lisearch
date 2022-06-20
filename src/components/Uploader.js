@@ -32,7 +32,7 @@ const Uploader = () => {
                 clone.lastName = csv.data[i][1]
 
                 if (clone.firstName === "" && clone.lastName === "") {
-                    break
+                    continue
                 }
 
                 clone.emailAddress = csv.data[i][2]
