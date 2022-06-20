@@ -12,7 +12,8 @@ const Uploader = () => {
         }).filter((x) => x !== "").filter((x, i, a) => a.indexOf(x) === i))];
 
         const generateConnectionsDataList = csv => {
-            let camelCaseKeys = csv.data[0].map((key) => {
+            let csvKeys = csv.data[0];
+            let camelCaseKeys = csvKeys.map((key) => {
                 return key.replace(/\s(.)/g, function ($1) {
                     return $1.toUpperCase();
                 })
@@ -21,27 +22,26 @@ const Uploader = () => {
                         return $1.toLowerCase();
                     });
             });
-            let connection = Object.assign({}, ...camelCaseKeys.map(key => ({[key]: ""})));
+            let connectionStub = Object.assign({}, ...camelCaseKeys.map(key => ({[key]: ""})));
             const connections = []
 
-            for (let i = 1; i < csv.data.length; i++) {
-                const clone = {...connection};
-                clone.firstName = csv.data[i][0]
-                clone.lastName = csv.data[i][1]
+            const csvDataWithoutKeys = csv.data.shift().data
+            csvDataWithoutKeys.reduce((accumulator, currentValue) => {
+                const clone = {...connectionStub};
 
-                if (clone.firstName === "" && clone.lastName === "") {
-                    continue
-                }
+                clone.firstName = currentValue[0]
+                clone.lastName = currentValue[1]
 
-                clone.emailAddress = csv.data[i][2]
-                clone.company = csv.data[i][3]
-                clone.position = csv.data[i][4]
-                clone.connectedOn = csv.data[i][5]
+                clone.emailAddress = currentValue[2]
+                clone.company = currentValue[3]
+                clone.position = currentValue[4]
+                clone.connectedOn = currentValue[5]
 
-                clone.fullName = csv.data[i][0] + ' ' + csv.data[i][1]
+                clone.fullName = currentValue[0] + ' ' + currentValue[1]
 
-                connections.push(clone)
-            }
+                return [...connections, clone]
+            })
+
             return connections;
         };
 
