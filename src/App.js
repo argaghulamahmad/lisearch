@@ -15,7 +15,10 @@ function App() {
                 <h1>Li Search</h1>
                 <Menu mode="horizontal">
                   <Menu.Item key="home">
-                    <Link to="/">Home</Link>
+                    <Link to="/">Connections</Link>
+                  </Menu.Item>
+                  <Menu.Item key="home">
+                    <Link to="/">Companies</Link>
                   </Menu.Item>
                   <Menu.Item key="uploadFile">
                     <Link to="/upload">Upload</Link>
