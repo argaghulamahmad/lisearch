@@ -30,16 +30,20 @@ const Connections = () => {
                     }}
                     style={{padding: "0 5% 0 5%"}}
                     columns={
-                    [
-                        {
-                            title: 'Full Name',
-                            dataIndex: 'fullName',
-                            key: 'fullName',
-                            render: text => <a href={`https://www.google.com/search?q=${text}`}
-                                               target="_blank">{text}</a>,
-                        }
-                    ]
-                } dataSource={connections}
+                        [
+                            {
+                                title: 'Full Name',
+                                dataIndex: 'fullName',
+                                key: 'fullName',
+                                render: text => <a href={`https://www.google.com/search?q=${text}`}
+                                                   target="_blank">{text}</a>,
+                                sorter: (a, b) => {
+                                    return a.fullName.localeCompare(b.fullName)
+                                },
+                            }
+                        ]
+                    }
+                    dataSource={connections}
                 />
             </Card>
 

@@ -37,6 +37,9 @@ const Connections = () => {
                                 key: 'company',
                                 render: text => <a href={`https://www.google.com/search?q=${text}`}
                                                    target="_blank">{text}</a>,
+                                sorter: (a, b) => {
+                                    return a.company.localeCompare(b.company)
+                                },
                             }
                         ]
                     }
@@ -51,6 +54,9 @@ const Connections = () => {
                                             key: 'fullName',
                                             render: text => <a href={`https://www.google.com/search?q=${text}`}
                                                                target="_blank">{text}</a>,
+                                            sorter: (a, b) => {
+                                                return a.fullName.localeCompare(b.fullName)
+                                            },
                                         }
                                     ]
                                 }
