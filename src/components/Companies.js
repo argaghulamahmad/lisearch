@@ -44,9 +44,7 @@ const Connections = () => {
                             {
                                 title: 'Total Connections',
                                 key: 'totalConnections',
-                                render: record => {
-                                    record.connections.length
-                                },
+                                render: record => <a>{record.connections.length}</a>,
                                 sorter: (a, b) => {
                                     return a.company.localeCompare(b.company)
                                 },
@@ -73,7 +71,7 @@ const Connections = () => {
                                 dataSource={record.connections}
                             />
                         </div>,
-                        rowExpandable: record => record.connections.length !== 0 && record.company === undefined,
+                        rowExpandable: record => record.connections.length !== 0 && record.company !== undefined,
                     }}
                     dataSource={companies}
                 />
