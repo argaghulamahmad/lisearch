@@ -7,6 +7,40 @@ const {Dragger} = Upload;
 const Uploader = () => {
     const {readString} = usePapaParse();
 
+    function generateConnectionsDataList(csv) {
+        let camelCaseKeys = csv.data[0].map((key) => {
+            return key.replace(/\s(.)/g, function ($1) {
+                return $1.toUpperCase();
+            })
+                .replace(/\s/g, '')
+                .replace(/^(.)/, function ($1) {
+                    return $1.toLowerCase();
+                });
+        });
+        let connection = Object.assign({}, ...camelCaseKeys.map(key => ({[key]: ""})));
+        const connections = []
+
+        for (let i = 1; i < csv.data.length; i++) {
+            const clone = {...connection};
+            clone.firstName = csv.data[i][0]
+            clone.lastName = csv.data[i][1]
+
+            if (clone.firstName === "" && clone.lastName === "") {
+                break
+            }
+
+            clone.emailAddress = csv.data[i][2]
+            clone.company = csv.data[i][3]
+            clone.position = csv.data[i][4]
+            clone.connectedOn = csv.data[i][5]
+
+            clone.fullName = csv.data[i][0] + ' ' + csv.data[i][1]
+
+            connections.push(clone)
+        }
+        return connections;
+    }
+
     return <div>
         <Dragger {...{
             name: 'file',
@@ -24,36 +58,7 @@ const Uploader = () => {
                                     readString(result, {
                                         worker: true,
                                         complete: (csv) => {
-                                            let camelCaseKeys = csv.data[0].map((key) => {
-                                                return key.replace(/\s(.)/g, function ($1) {
-                                                    return $1.toUpperCase();
-                                                })
-                                                    .replace(/\s/g, '')
-                                                    .replace(/^(.)/, function ($1) {
-                                                        return $1.toLowerCase();
-                                                    });
-                                            });
-                                            let connection = Object.assign({}, ...camelCaseKeys.map(key => ({[key]: ""})));
-                                            const connections = []
-
-                                            for (let i = 1; i < csv.data.length; i++) {
-                                                const clone = {...connection};
-                                                clone.firstName = csv.data[i][0]
-                                                clone.lastName = csv.data[i][1]
-
-                                                if (clone.firstName === "" && clone.lastName === "") {
-                                                    break
-                                                }
-
-                                                clone.emailAddress = csv.data[i][2]
-                                                clone.company = csv.data[i][3]
-                                                clone.position = csv.data[i][4]
-                                                clone.connectedOn = csv.data[i][5]
-
-                                                clone.fullName = csv.data[i][0] + ' ' + csv.data[i][1]
-
-                                                connections.push(clone)
-                                            }
+                                            const connections = generateConnectionsDataList(csv);
 
                                             localStorage.setItem('connections', JSON.stringify(connections));
                                             notification.success({
