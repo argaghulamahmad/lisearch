@@ -20,7 +20,7 @@ const Connections = () => {
                     lastUpdateAt !== "" ? null :
                         <Text type="secondary" level={5}> Last updated at {lastUpdateAt}.</Text>
                 }
-                <Table style={{padding: "0 5% 0 5%"}} columns={
+                <Table style={{padding: "0 5% 0 5%"}} rowkey={(record) => record.idx} columns={
                     [
                         {
                             title: 'Company',
@@ -30,7 +30,14 @@ const Connections = () => {
                                                target="_blank">{text}</a>,
                         }
                     ]
-                } dataSource={companies}
+                }
+                       expandable={{
+                           expandedRowRender: record => <div>
+
+                           </div>,
+                           rowExpandable: record => record.connections.length !== 0,
+                       }}
+                       dataSource={companies}
                 />
             </Card>
 

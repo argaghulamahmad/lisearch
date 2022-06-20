@@ -24,8 +24,10 @@ const Uploader = () => {
             });
             let connectionStub = Object.assign({}, ...camelCaseKeys.map(key => ({[key]: ""})));
 
-            const connections = csv.data.reduce((accumulator, currentValue) => {
+            return csv.data.reduce((accumulator, currentValue, idx) => {
                 const clone = {...connectionStub};
+
+                clone.idx = idx
 
                 clone.firstName = currentValue[0]
                 clone.lastName = currentValue[1]
@@ -38,18 +40,17 @@ const Uploader = () => {
                 clone.fullName = currentValue[0] + ' ' + currentValue[1]
 
                 return [...accumulator, clone]
-            }, [])
-
-            return connections;
+            }, []);
         };
 
-        const generateMapCompanyConnections = (companies, connections) => {
+        const generateMapCompanyConnections = (companies, connections, idx) => {
             return companies.reduce((accumulator, currentValue) => {
                 let connectionsAtCompany = connections.filter((connection) => {
                     return connection.company === currentValue
                 })
 
                 return [...accumulator, {
+                    idx: idx,
                     company: currentValue,
                     connections: connectionsAtCompany,
                 }]
