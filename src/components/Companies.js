@@ -46,8 +46,8 @@ const Connections = () => {
                                 key: 'totalConnections',
                                 render: record => <a>{record.connections.length}</a>,
                                 sorter: (a, b) => {
-                                    if (a > b) return 1
-                                    else if (a < b) return -1
+                                    if (a.connections.length > b.connections.length) return 1
+                                    else if (a.connections.length < b.connections.length) return -1
                                     else return 0
                                 },
                             }
