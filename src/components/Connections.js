@@ -36,7 +36,7 @@ const Connections = () => {
                                 dataIndex: 'fullName',
                                 key: 'fullName',
                                 render: text => <a href={`https://www.google.com/search?q=${text}`}
-                                                   target="_blank">{text}</a>,
+                                                   target="_blank" rel="noreferrer">{text}</a>,
                                 sorter: (a, b) => {
                                     return a.fullName.localeCompare(b.fullName)
                                 },
@@ -46,7 +46,7 @@ const Connections = () => {
                                 dataIndex: 'position',
                                 key: 'position',
                                 render: text => <a href={`https://www.google.com/search?q=${text}`}
-                                                   target="_blank">{text}</a>,
+                                                   target="_blank" rel="noreferrer">{text}</a>,
                                 sorter: (a, b) => {
                                     return a.position.localeCompare(b.position)
                                 },
@@ -56,7 +56,7 @@ const Connections = () => {
                                 dataIndex: 'company',
                                 key: 'company',
                                 render: text => <a href={`https://www.google.com/search?q=${text}`}
-                                                   target="_blank">{text}</a>,
+                                                   target="_blank" rel="noreferrer">{text}</a>,
                                 sorter: (a, b) => {
                                     return a.position.localeCompare(b.position)
                                 },
