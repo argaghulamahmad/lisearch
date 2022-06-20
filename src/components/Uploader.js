@@ -25,7 +25,7 @@ const Uploader = () => {
             let connectionStub = Object.assign({}, ...camelCaseKeys.map(key => ({[key]: ""})));
 
             return csv.data.reduce((accumulator, currentValue, idx) => {
-                if (currentValue[0] !== undefined || currentValue[1] !== undefined) {
+                if (currentValue[0] !== undefined && currentValue[1] !== undefined) {
                     if (currentValue[0] !== "" || currentValue[1] !== "") {
                         const clone = {...connectionStub};
 
