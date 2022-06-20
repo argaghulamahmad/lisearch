@@ -40,7 +40,27 @@ const Connections = () => {
                                 sorter: (a, b) => {
                                     return a.fullName.localeCompare(b.fullName)
                                 },
-                            }
+                            },
+                            {
+                                title: 'Position',
+                                dataIndex: 'position',
+                                key: 'position',
+                                render: text => <a href={`https://www.google.com/search?q=${text}`}
+                                                   target="_blank">{text}</a>,
+                                sorter: (a, b) => {
+                                    return a.position.localeCompare(b.position)
+                                },
+                            },
+                            {
+                                title: 'Company',
+                                dataIndex: 'company',
+                                key: 'company',
+                                render: text => <a href={`https://www.google.com/search?q=${text}`}
+                                                   target="_blank">{text}</a>,
+                                sorter: (a, b) => {
+                                    return a.company.localeCompare(b.company)
+                                },
+                            },
                         ]
                     }
                     dataSource={connections}
