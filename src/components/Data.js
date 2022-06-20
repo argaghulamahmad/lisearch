@@ -30,11 +30,12 @@ const Data = () => {
                             title: 'Full Name',
                             dataIndex: 'fullName',
                             key: 'fullName',
-                            render: text => <a>{text}</a>,
+                            render: text => <a href={`https://www.google.com/search?q=${text}`}
+                                               target="_blank">{text}</a>,
                         }
                     ]
-                }
-               dataSource={connections}/>
+                } dataSource={connections}
+                />
             </Card>
 
             <BackTop/>
