@@ -8,11 +8,9 @@ const Uploader = () => {
         const {readString} = usePapaParse();
 
         function generateCompaniesDataList(connections) {
-            return connections.map((item) => {
+            return [...new Set(connections.map((item) => {
                 return item.company
-            }).filter(((value, index, self) => {
-                return self.indexOf(value) === index;
-            }))
+            }))];
         }
 
         function generateConnectionsDataList(csv) {
