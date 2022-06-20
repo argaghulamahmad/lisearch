@@ -44,7 +44,7 @@ const Connections = () => {
                             {
                                 title: 'Total Connections',
                                 key: 'totalConnections',
-                                render: record => <a>{record.connections.length}</a>,
+                                render: record => <div>{record.connections.length}</div>,
                                 sorter: (a, b) => {
                                     if (a.connections.length > b.connections.length) return 1
                                     else if (a.connections.length < b.connections.length) return -1
