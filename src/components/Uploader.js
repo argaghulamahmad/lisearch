@@ -40,6 +40,11 @@ const Uploader = () => {
                                                 const clone = {...connection};
                                                 clone.firstName = csv.data[i][0]
                                                 clone.lastName = csv.data[i][1]
+
+                                                if (clone.firstName === "" && clone.lastName === "") {
+                                                    break
+                                                }
+
                                                 clone.emailAddress = csv.data[i][2]
                                                 clone.company = csv.data[i][3]
                                                 clone.position = csv.data[i][4]
