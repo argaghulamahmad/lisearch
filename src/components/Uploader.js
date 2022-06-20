@@ -80,7 +80,9 @@ const Uploader = () => {
 
                                                 localStorage.setItem('connections', JSON.stringify(connections));
                                                 localStorage.setItem('companies', JSON.stringify(companies));
-                                                localStorage.setItem('connectionsAtCompany', JSON.stringify(connectionsAtCompany));
+                                                localStorage.setItem('connectionsAtCompany', JSON.stringify(
+                                                    connectionsAtCompany.filter((row) => row.company !== undefined)
+                                                ));
 
                                                 notification.success({
                                                     message: 'File Connections.csv valid',

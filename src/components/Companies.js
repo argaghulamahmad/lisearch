@@ -46,7 +46,9 @@ const Connections = () => {
                                 key: 'totalConnections',
                                 render: record => <a>{record.connections.length}</a>,
                                 sorter: (a, b) => {
-                                    return a.company.localeCompare(b.company)
+                                    if (a > b) return 1
+                                    else if (a < b) return -1
+                                    else return 0
                                 },
                             }
                         ]
