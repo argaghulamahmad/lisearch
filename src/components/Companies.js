@@ -49,14 +49,13 @@ const Connections = () => {
                             {
                                 title: 'Company',
                                 dataIndex: 'company',
-                                key: 'company',
                                 render: text => <a href={`https://www.google.com/search?q=${text}`}
                                                    target="_blank" rel="noreferrer">{text}</a>,
                                 sorter: (a, b) => {
                                     return a.company.localeCompare(b.company)
                                 },
                             },
-                            {
+                            /*{
                                 title: 'Total Connections',
                                 key: 'totalConnections',
                                 render: record => <div>{record.connections.length}</div>,
@@ -65,7 +64,7 @@ const Connections = () => {
                                     else if (a.connections.length < b.connections.length) return -1
                                     else return 0
                                 },
-                            }
+                            }*/
                         ]
                     }
                     expandable={{

@@ -48,10 +48,12 @@ const Positions = () => {
                         [
                             {
                                 title: 'Position',
+                                dataIndex: 'title',
+                                key: 'key',
                                 render: text => <a href={`https://www.google.com/search?q=${text}`}
                                                    target="_blank" rel="noreferrer">{text}</a>,
                                 sorter: (a, b) => {
-                                    return a.localeCompare(b)
+                                    return a.title.localeCompare(b.title)
                                 },
                                 filterMode: 'tree',
                                 filterSearch: true,
