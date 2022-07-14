@@ -10,7 +10,7 @@ const Uploader = () => {
         const generateCompaniesDataList = connections => {
             const companiesMap = connections.reduce(function(map, connection, idx) {
                 map.set(connection.company, {
-                    key: idx,
+                    id: idx,
                     company: connection.company,
                 });
                 return map;
@@ -21,7 +21,7 @@ const Uploader = () => {
         const generatePositionsDataList = connections => {
             const positionsMap = connections.reduce(function(map, connection, idx) {
                 map.set(connection.position + " at " + connection.company, {
-                    key: idx,
+                    id: idx,
                     title: connection.position + " at " + connection.company,
                     position: connection.position,
                     company: connection.company,
@@ -49,7 +49,7 @@ const Uploader = () => {
                     if (currentValue[0] !== "" || currentValue[1] !== "") {
                         const clone = {...connectionStub};
 
-                        clone.idx = idx
+                        clone.id = idx
 
                         clone.firstName = currentValue[0]
                         clone.lastName = currentValue[1]
