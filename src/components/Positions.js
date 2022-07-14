@@ -21,7 +21,7 @@ const Positions = () => {
             <Button onClick={() => {
                 for (let i = 0; i < 5; i++) {
                     const position = getRandomPosition();
-                    window.open(`https://www.google.com/search?q=${position}`, '_blank');
+                    window.open(`https://www.google.com/search?q=${position.title}`, '_blank');
                 }
             }}>I feel lucky</Button>
         </Space>
