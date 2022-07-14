@@ -80,19 +80,19 @@ const Uploader = () => {
             }, []);
         };
 
-        const generateMapCompanyConnections = (companies, connections) => {
-            return companies.reduce((accumulator, currentValue, idx) => {
-                let connectionsAtCompany = connections.filter((connection) => {
-                    return connection.company === currentValue
-                })
-
-                return [...accumulator, {
-                    idx: idx,
-                    company: currentValue,
-                    connections: connectionsAtCompany,
-                }]
-            }, [])
-        }
+        // const generateMapCompanyConnections = (companies, connections) => {
+        //     return companies.reduce((accumulator, currentValue, idx) => {
+        //         let connectionsAtCompany = connections.filter((connection) => {
+        //             return connection.company === currentValue
+        //         })
+        //
+        //         return [...accumulator, {
+        //             idx: idx,
+        //             company: currentValue,
+        //             connections: connectionsAtCompany,
+        //         }]
+        //     }, [])
+        // }
 
         return <div>
             <Dragger {...{
@@ -114,7 +114,7 @@ const Uploader = () => {
                                             complete: (csv) => {
                                                 const connections = generateConnectionsDataList(csv);
                                                 const companies = generateCompaniesDataList(connections);
-                                                const connectionsAtCompany = generateMapCompanyConnections(companies, connections);
+                                                // const connectionsAtCompany = generateMapCompanyConnections(companies, connections);
                                                 const positions = generatePositionsDataList(connections);
 
                                                 localStorage.setItem('connections', JSON.stringify(
@@ -123,9 +123,9 @@ const Uploader = () => {
                                                 localStorage.setItem('companies', JSON.stringify(
                                                     companies
                                                 ));
-                                                localStorage.setItem('connectionsAtCompany', JSON.stringify(
-                                                    connectionsAtCompany
-                                                ));
+                                                // localStorage.setItem('connectionsAtCompany', JSON.stringify(
+                                                //     connectionsAtCompany
+                                                // ));
                                                 localStorage.setItem('positions', JSON.stringify(
                                                     positions
                                                 ));

@@ -9,7 +9,7 @@ const Connections = () => {
 
     useEffect(() => {
         setLastUpdateAt(localStorage.getItem('lastUpdateAt'))
-        setCompanies(JSON.parse(localStorage.getItem('connectionsAtCompany')))
+        setCompanies(JSON.parse(localStorage.getItem('companies')))
     }, []);
 
     const getRandomCompany = () => {
@@ -50,10 +50,10 @@ const Connections = () => {
                                 title: 'Company',
                                 dataIndex: 'company',
                                 key: 'id',
-                                render: item => <a href={`https://www.google.com/search?q=${item.company}`}
-                                                   target="_blank" rel="noreferrer">{item.company}</a>,
+                                render: item => <a href={`https://www.google.com/search?q=${item}`}
+                                                   target="_blank" rel="noreferrer">{item}</a>,
                                 sorter: (a, b) => {
-                                    return a.company.localeCompare(b.company)
+                                    return a.localeCompare(b)
                                 },
                             }
                         ]
