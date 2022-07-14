@@ -49,19 +49,11 @@ const Connections = () => {
                             {
                                 title: 'Company',
                                 dataIndex: 'company',
-                                render: text => <a href={`https://www.google.com/search?q=${text}`}
-                                                   target="_blank" rel="noreferrer">{text}</a>,
+                                key: 'id',
+                                render: item => <a href={`https://www.google.com/search?q=${item.company}`}
+                                                   target="_blank" rel="noreferrer">{item.company}</a>,
                                 sorter: (a, b) => {
                                     return a.company.localeCompare(b.company)
-                                },
-                            },
-                            {
-                                title: 'Total Connections',
-                                render: record => <div>{record.connections.length}</div>,
-                                sorter: (a, b) => {
-                                    if (a.connections.length > b.connections.length) return 1
-                                    else if (a.connections.length < b.connections.length) return -1
-                                    else return 0
                                 },
                             }
                         ]
@@ -83,7 +75,7 @@ const Connections = () => {
                                         {
                                             title: 'Full Name',
                                             dataIndex: 'fullName',
-                                            key: 'fullName',
+                                            key: 'id',
                                             render: text => <a href={`https://www.google.com/search?q=${text}`}
                                                                target="_blank" rel="noreferrer">{text}</a>,
                                             sorter: (a, b) => {
@@ -93,7 +85,7 @@ const Connections = () => {
                                         {
                                             title: 'Position',
                                             dataIndex: 'position',
-                                            key: 'position',
+                                            key: 'id',
                                             render: text => <a href={`https://www.google.com/search?q=${text}`}
                                                                target="_blank" rel="noreferrer">{text}</a>,
 

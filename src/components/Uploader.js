@@ -1,5 +1,5 @@
 import {InboxOutlined} from '@ant-design/icons';
-import {Upload, notification} from "antd";
+import {notification, Upload} from "antd";
 import {usePapaParse} from 'react-papaparse';
 
 const {Dragger} = Upload;
@@ -15,7 +15,15 @@ const Uploader = () => {
                 });
                 return map;
             }, new Map());
-            return Array.from(companiesMap.values());
+
+            const uniqueCompanies = Array.from(companiesMap.values());
+            return uniqueCompanies.map(company => {
+                let connectionsAtCompany = connections.filter(connection => connection.company === company.company);
+                return {
+                    ...company,
+                    connections: connectionsAtCompany,
+                }
+            });
         };
 
         const generatePositionsDataList = connections => {
