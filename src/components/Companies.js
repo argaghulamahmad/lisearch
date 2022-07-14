@@ -17,7 +17,7 @@ const Connections = () => {
     }
 
     const renderAntdButtonToGetRandomCompany = () => {
-        return <Space size="middle" style={{margin: "20px" }} >
+        return <Space size="middle" style={{margin: "20px"}}>
             <Button onClick={() => {
                 for (let i = 0; i < 5; i++) {
                     const company = getRandomCompany();
@@ -70,6 +70,15 @@ const Connections = () => {
                     }
                     expandable={{
                         expandedRowRender: record => <div>
+                            <Space size="middle" style={{margin: "20px"}}>
+                                <Button onClick={() => {
+                                    for (let i = 0; i < 5; i++) {
+                                        const connection = record.connections[Math.floor(Math.random() * record.connections.length)];
+                                        const {fullName, position} = connection;
+                                        window.open(`https://www.google.com/search?q=${fullName + " " + position}`, '_blank');
+                                    }
+                                }}>I feel lucky</Button>
+                            </Space>
                             <Table
                                 columns={
                                     [
@@ -82,6 +91,14 @@ const Connections = () => {
                                             sorter: (a, b) => {
                                                 return a.fullName.localeCompare(b.fullName)
                                             },
+                                        },
+                                        {
+                                            title: 'Position',
+                                            dataIndex: 'position',
+                                            key: 'position',
+                                            render: text => <a href={`https://www.google.com/search?q=${text}`}
+                                                               target="_blank" rel="noreferrer">{text}</a>,
+
                                         }
                                     ]
                                 }
