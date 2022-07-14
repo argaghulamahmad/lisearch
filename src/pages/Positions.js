@@ -17,8 +17,18 @@ const Positions = () => {
         return positions[Math.floor(Math.random() * positions.length)];
     }
 
-    const renderAntdButtonToGetRandomConnection = () => {
+    const renderTableToolbar = () => {
         return <Space size="middle" style={{margin: "20px" }} >
+            <KeywordSearch onSearch={(searchText) => {
+                let positionsFromLocalStorage = JSON.parse(localStorage.getItem('positions'));
+
+                const filteredPosition = positionsFromLocalStorage.filter(({ title }) => {
+                    title = title.toLowerCase();
+                    return title.includes(searchText);
+                });
+
+                setPositions(filteredPosition);
+            }}></KeywordSearch>
             <Button onClick={() => {
                 for (let i = 0; i < 5; i++) {
                     const position = getRandomPosition();
@@ -35,17 +45,7 @@ const Positions = () => {
                     lastUpdateAt !== "" ? null :
                         <Text type="secondary" level={5}> Last updated at {lastUpdateAt}.</Text>
                 }
-                {renderAntdButtonToGetRandomConnection()}
-                <KeywordSearch onSearch={(searchText) => {
-                    let positionsFromLocalStorage = JSON.parse(localStorage.getItem('positions'));
-
-                    const filteredPosition = positionsFromLocalStorage.filter(({ title }) => {
-                        title = title.toLowerCase();
-                        return title.includes(searchText);
-                    });
-
-                    setPositions(filteredPosition);
-                }}></KeywordSearch>
+                {renderTableToolbar()}
                 <Table
                     showHeader={true}
                     rowKey="id"
