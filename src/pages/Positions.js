@@ -24,7 +24,7 @@ const Positions = () => {
 
                 const filteredPosition = positionsFromLocalStorage.filter(({ title }) => {
                     title = title.toLowerCase();
-                    return title.includes(searchText);
+                    return title.includes(searchText.toLowerCase());
                 });
 
                 setPositions(filteredPosition);

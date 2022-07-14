@@ -24,7 +24,7 @@ const Connections = () => {
 
                 const filteredCompanies = companiesFromLocalStorage.filter(({ company }) => {
                     company = company.toLowerCase();
-                    return company.includes(searchText);
+                    return company.includes(searchText.toLowerCase());
                 });
 
                 setCompanies(filteredCompanies);

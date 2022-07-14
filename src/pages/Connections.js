@@ -24,7 +24,7 @@ const Connections = () => {
 
                 const filteredPosition = connectionsFromLocalStorage.filter(({fullName}) => {
                     fullName = fullName.toLowerCase();
-                    return fullName.includes(searchText);
+                    return fullName.includes(searchText.toLowerCase());
                 });
 
                 setConnections(filteredPosition);
