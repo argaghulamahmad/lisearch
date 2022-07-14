@@ -2,6 +2,7 @@ import {useEffect, useState} from "react";
 import {BackTop, Button, Card, Space, Table} from "antd";
 import Text from "antd/es/typography/Text";
 import Uploader from "./Uploader";
+import {KeywordSearch} from "../components/Search";
 
 const Connections = () => {
     const [lastUpdateAt, setLastUpdateAt] = useState("");
@@ -16,8 +17,18 @@ const Connections = () => {
         return companies[Math.floor(Math.random() * companies.length)];
     }
 
-    const renderAntdButtonToGetRandomCompany = () => {
+    const renderTableToolbar = () => {
         return <Space size="middle" style={{margin: "20px"}}>
+            <KeywordSearch onSearch={(searchText) => {
+                let companiesFromLocalStorage = JSON.parse(localStorage.getItem('companies'));
+
+                const filteredPosition = companiesFromLocalStorage.filter(({ title: company }) => {
+                    company = company.toLowerCase();
+                    return company.includes(searchText);
+                });
+
+                setCompanies(filteredPosition);
+            }}></KeywordSearch>
             <Button onClick={() => {
                 for (let i = 0; i < 5; i++) {
                     const company = getRandomCompany();
@@ -34,7 +45,7 @@ const Connections = () => {
                     lastUpdateAt !== "" ? null :
                         <Text type="secondary" level={5}> Last updated at {lastUpdateAt}.</Text>
                 }
-                {renderAntdButtonToGetRandomCompany()}
+                {renderTableToolbar()}
                 <Table
                     showHeader={true}
                     rowKey="id"
