@@ -2,6 +2,7 @@ import {useEffect, useState} from "react";
 import {BackTop, Button, Card, Space, Table} from "antd";
 import Text from "antd/es/typography/Text";
 import Uploader from "./Uploader";
+import {KeywordSearch} from "../components/Search";
 
 const Connections = () => {
     const [lastUpdateAt, setLastUpdateAt] = useState("");
@@ -17,7 +18,17 @@ const Connections = () => {
     }
 
     const renderAntdButtonToGetRandomConnection = () => {
-        return <Space size="middle" style={{margin: "20px" }} >
+        return <Space size="middle" style={{margin: "20px"}} >
+            <KeywordSearch onSearch={(searchText) => {
+                let connectionsFromLocalStorage = JSON.parse(localStorage.getItem('connections'));
+
+                const filteredPosition = connectionsFromLocalStorage.filter(({ fullName }) => {
+                    fullName = fullName.toLowerCase();
+                    return fullName.includes(searchText);
+                });
+
+                setConnections(filteredPosition);
+            }}></KeywordSearch>
             <Button onClick={() => {
                 for (let i = 0; i < 5; i++) {
                     const connection = getRandomConnection();
