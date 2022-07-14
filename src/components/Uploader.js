@@ -70,10 +70,11 @@ const Uploader = () => {
                 name: 'file',
                 multiple: true,
 
-                onDrop(e) {
-                    Array.from(e.dataTransfer.files).forEach(file => {
+                onChange(e) {
+                    Array.from(e.fileList).forEach(file => {
                         const reader = new FileReader();
-                        reader.readAsText(file, "UTF-8");
+                        const {originFileObj} = file;
+                        reader.readAsText(originFileObj, "UTF-8");
                         if (file.name === "Connections.csv") {
                             reader.onload = function (evt) {
                                 let result = evt.target.result;
