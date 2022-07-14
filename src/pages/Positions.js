@@ -2,6 +2,7 @@ import {useEffect, useState} from "react";
 import {BackTop, Button, Card, Space, Table} from "antd";
 import Text from "antd/es/typography/Text";
 import Uploader from "./Uploader";
+import {KeywordSearch} from "../components/Search";
 
 const Positions = () => {
     const [lastUpdateAt, setLastUpdateAt] = useState("");
@@ -35,6 +36,16 @@ const Positions = () => {
                         <Text type="secondary" level={5}> Last updated at {lastUpdateAt}.</Text>
                 }
                 {renderAntdButtonToGetRandomConnection()}
+                <KeywordSearch onSearch={(searchText) => {
+                    let positionsFromLocalStorage = JSON.parse(localStorage.getItem('positions'));
+
+                    const filteredPosition = positionsFromLocalStorage.filter(({ title }) => {
+                        title = title.toLowerCase();
+                        return title.includes(searchText);
+                    });
+
+                    setPositions(filteredPosition);
+                }}></KeywordSearch>
                 <Table
                     showHeader={true}
                     rowKey="id"

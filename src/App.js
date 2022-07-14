@@ -1,11 +1,11 @@
 import './App.css';
 
-import Connections from "./components/Connections";
-import Companies from "./components/Companies";
-import Uploader from './components/Uploader';
+import Connections from "./pages/Connections";
+import Companies from "./pages/Companies";
+import Uploader from './pages/Uploader';
 import {BrowserRouter as Router, Link, Route, Switch} from "react-router-dom";
 import {Divider, Menu} from "antd";
-import Positions from "./components/Positions";
+import Positions from "./pages/Positions";
 
 function App() {
   return (
