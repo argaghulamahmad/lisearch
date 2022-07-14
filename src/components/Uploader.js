@@ -7,12 +7,20 @@ const {Dragger} = Upload;
 const Uploader = () => {
         const {readString} = usePapaParse();
 
-        const generateCompaniesDataList = connections => [...new Set(connections.map((item) => {
-            return item.company
+        const generateCompaniesDataList = connections => [...new Set(connections.map((item, idx) => {
+            return {
+                key: idx,
+                company: item.company,
+            }
         }).filter((x) => x !== "").filter((x, i, a) => a.indexOf(x) === i))];
 
-        const generatePositionsDataList = connections => [...new Set(connections.map((item) => {
-            return item.position + " at " + item.company
+        const generatePositionsDataList = connections => [...new Set(connections.map((item, idx) => {
+            return {
+                key: idx,
+                item: item.position + " at " + item.company,
+                position: item.position,
+                company: item.company,
+            }
         }).filter((x) => x !== "").filter((x, i, a) => a.indexOf(x) === i))];
 
         const generateConnectionsDataList = csv => {

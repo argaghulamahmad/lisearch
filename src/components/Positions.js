@@ -53,6 +53,8 @@ const Positions = () => {
                                 sorter: (a, b) => {
                                     return a.localeCompare(b)
                                 },
+                                filterMode: 'tree',
+                                filterSearch: true,
                             }
                         ]
                     }
