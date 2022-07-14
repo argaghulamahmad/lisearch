@@ -27,7 +27,6 @@ const Positions = () => {
         </Space>
     }
 
-
     return (
         positions ? <div>
             <Card>
