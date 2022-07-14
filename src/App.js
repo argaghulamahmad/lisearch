@@ -5,6 +5,7 @@ import Companies from "./components/Companies";
 import Uploader from './components/Uploader';
 import {BrowserRouter as Router, Link, Route, Switch} from "react-router-dom";
 import {Divider, Menu} from "antd";
+import Positions from "./components/Positions";
 
 function App() {
   return (
@@ -18,6 +19,9 @@ function App() {
                   <Menu.Item key="home">
                     <Link to="/">Connections</Link>
                   </Menu.Item>
+                  <Menu.Item key="positions">
+                    <Link to="/positions">Positions</Link>
+                  </Menu.Item>
                   <Menu.Item key="companies">
                     <Link to="/companies">Companies</Link>
                   </Menu.Item>
@@ -30,6 +34,9 @@ function App() {
               <Switch>
                 <Route exact path="/">
                   <Connections/>
+                </Route>
+                <Route path="/positions">
+                    <Positions/>
                 </Route>
                 <Route exact path="/companies">
                   <Companies/>
