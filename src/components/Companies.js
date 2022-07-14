@@ -37,7 +37,7 @@ const Connections = () => {
                 {renderAntdButtonToGetRandomCompany()}
                 <Table
                     showHeader={true}
-                    rowKey="idx"
+                    rowKey="id"
                     pagination={{
                         defaultPageSize: 100,
                         showSizeChanger: true,
@@ -55,16 +55,15 @@ const Connections = () => {
                                     return a.company.localeCompare(b.company)
                                 },
                             },
-                            /*{
+                            {
                                 title: 'Total Connections',
-                                key: 'totalConnections',
                                 render: record => <div>{record.connections.length}</div>,
                                 sorter: (a, b) => {
                                     if (a.connections.length > b.connections.length) return 1
                                     else if (a.connections.length < b.connections.length) return -1
                                     else return 0
                                 },
-                            }*/
+                            }
                         ]
                     }
                     expandable={{

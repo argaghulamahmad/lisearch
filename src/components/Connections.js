@@ -39,7 +39,7 @@ const Connections = () => {
                 {renderAntdButtonToGetRandomConnection()}
                 <Table
                     showHeader={true}
-                    rowKey="idx"
+                    rowKey="id"
                     pagination={{
                         defaultPageSize: 100,
                         showSizeChanger: true,

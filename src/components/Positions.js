@@ -37,7 +37,7 @@ const Positions = () => {
                 {renderAntdButtonToGetRandomConnection()}
                 <Table
                     showHeader={true}
-                    rowKey="idx"
+                    rowKey="id"
                     pagination={{
                         defaultPageSize: 100,
                         showSizeChanger: true,
@@ -49,7 +49,7 @@ const Positions = () => {
                             {
                                 title: 'Position',
                                 dataIndex: 'title',
-                                key: 'key',
+                                key: 'id',
                                 render: text => <a href={`https://www.google.com/search?q=${text}`}
                                                    target="_blank" rel="noreferrer">{text}</a>,
                                 sorter: (a, b) => {
