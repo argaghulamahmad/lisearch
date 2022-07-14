@@ -18,7 +18,7 @@ const Connections = () => {
 
     const renderAntdButtonToGetRandomCompany = () => {
         return <Button onClick={() => {
-            for (let i = 0; i < 10; i++) {
+            for (let i = 0; i < 5; i++) {
                 const company = getRandomCompany();
                 window.open(`https://www.google.com/search?q=${company.company}`, '_blank');
             }
