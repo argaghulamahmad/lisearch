@@ -1,5 +1,5 @@
 import {useEffect, useState} from "react";
-import {BackTop, Card, Table} from "antd";
+import {BackTop, Button, Card, Space, Table} from "antd";
 import Text from "antd/es/typography/Text";
 import Uploader from "./Uploader";
 
@@ -12,6 +12,22 @@ const Connections = () => {
         setConnections(JSON.parse(localStorage.getItem('connections')))
     }, []);
 
+    const getRandomConnection = () => {
+        return connections[Math.floor(Math.random() * connections.length)];
+    }
+
+    const renderAntdButtonToGetRandomConnection = () => {
+        return <Space size="middle" style={{margin: "20px" }} >
+            <Button onClick={() => {
+                for (let i = 0; i < 5; i++) {
+                    const connection = getRandomConnection();
+                    const {fullName, position} = connection;
+                    window.open(`https://www.google.com/search?q=${fullName + " " + position}`, '_blank');
+                }
+            }}>I feel lucky</Button>
+        </Space>
+    }
+
 
     return (
         connections ? <div>
@@ -20,6 +36,7 @@ const Connections = () => {
                     lastUpdateAt !== "" ? null :
                         <Text type="secondary" level={5}> Last updated at {lastUpdateAt}.</Text>
                 }
+                {renderAntdButtonToGetRandomConnection()}
                 <Table
                     showHeader={true}
                     rowKey="idx"

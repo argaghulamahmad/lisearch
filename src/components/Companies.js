@@ -1,5 +1,5 @@
 import {useEffect, useState} from "react";
-import {BackTop, Button, Card, Table} from "antd";
+import {BackTop, Button, Card, Space, Table} from "antd";
 import Text from "antd/es/typography/Text";
 import Uploader from "./Uploader";
 
@@ -17,12 +17,14 @@ const Connections = () => {
     }
 
     const renderAntdButtonToGetRandomCompany = () => {
-        return <Button onClick={() => {
-            for (let i = 0; i < 5; i++) {
-                const company = getRandomCompany();
-                window.open(`https://www.google.com/search?q=${company.company}`, '_blank');
-            }
-        }}>Random company</Button>
+        return <Space size="middle" style={{margin: "20px" }} >
+            <Button onClick={() => {
+                for (let i = 0; i < 5; i++) {
+                    const company = getRandomCompany();
+                    window.open(`https://www.google.com/search?q=${company.company}`, '_blank');
+                }
+            }}>I feel lucky</Button>
+        </Space>
     }
 
     return (
