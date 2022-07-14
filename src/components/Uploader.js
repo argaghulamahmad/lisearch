@@ -12,7 +12,7 @@ const Uploader = () => {
         }).filter((x) => x !== "").filter((x, i, a) => a.indexOf(x) === i))];
 
         const generatePositionsDataList = connections => [...new Set(connections.map((item) => {
-            return item.position
+            return item.position + " at " + item.company
         }).filter((x) => x !== "").filter((x, i, a) => a.indexOf(x) === i))];
 
         const generateConnectionsDataList = csv => {
