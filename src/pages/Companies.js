@@ -22,12 +22,12 @@ const Connections = () => {
             <KeywordSearch onSearch={(searchText) => {
                 let companiesFromLocalStorage = JSON.parse(localStorage.getItem('companies'));
 
-                const filteredPosition = companiesFromLocalStorage.filter(({ title: company }) => {
+                const filteredCompanies = companiesFromLocalStorage.filter(({ company }) => {
                     company = company.toLowerCase();
                     return company.includes(searchText);
                 });
 
-                setCompanies(filteredPosition);
+                setCompanies(filteredCompanies);
             }}></KeywordSearch>
             <Button onClick={() => {
                 for (let i = 0; i < 5; i++) {
