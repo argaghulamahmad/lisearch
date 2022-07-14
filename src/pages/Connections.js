@@ -18,11 +18,11 @@ const Connections = () => {
     }
 
     const renderAntdButtonToGetRandomConnection = () => {
-        return <Space size="middle" style={{margin: "20px"}} >
+        return <Space size="middle" style={{margin: "20px"}}>
             <KeywordSearch onSearch={(searchText) => {
                 let connectionsFromLocalStorage = JSON.parse(localStorage.getItem('connections'));
 
-                const filteredPosition = connectionsFromLocalStorage.filter(({ fullName }) => {
+                const filteredPosition = connectionsFromLocalStorage.filter(({fullName}) => {
                     fullName = fullName.toLowerCase();
                     return fullName.includes(searchText);
                 });
@@ -62,7 +62,7 @@ const Connections = () => {
                             {
                                 title: 'Full Name',
                                 dataIndex: 'fullName',
-                                key: 'fullName',
+                                key: 'idx',
                                 render: text => <a href={`https://www.google.com/search?q=${text}`}
                                                    target="_blank" rel="noreferrer">{text}</a>,
                                 sorter: (a, b) => {
@@ -72,7 +72,7 @@ const Connections = () => {
                             {
                                 title: 'Position',
                                 dataIndex: 'position',
-                                key: 'position',
+                                key: 'idx',
                                 render: text => <a href={`https://www.google.com/search?q=${text}`}
                                                    target="_blank" rel="noreferrer">{text}</a>,
                                 sorter: (a, b) => {
@@ -82,9 +82,27 @@ const Connections = () => {
                             {
                                 title: 'Company',
                                 dataIndex: 'company',
-                                key: 'company',
+                                key: 'idx',
                                 render: text => <a href={`https://www.google.com/search?q=${text}`}
                                                    target="_blank" rel="noreferrer">{text}</a>,
+                                sorter: (a, b) => {
+                                    return a.position.localeCompare(b.position)
+                                },
+                            },
+                            {
+                                title: 'Research',
+                                dataIndex: 'fullName',
+                                key: 'idx',
+                                render: text => <div>
+                                    <button style={{border: "1px solid", padding: "1px"}} onClick={() => {
+                                        window.open(`https://www.google.com/search?q=${text} site:linkedin.com`, '_blank');
+                                    }}>Linkedin</button>
+                                    <div style={{marginRight: "1px"}}></div>
+                                    <button style={{border: "1px solid", padding: "1px"}} onClick={() => {
+                                        window.open(`https://www.google.com/search?q=${text} site:instagram.com `, '_blank');
+                                    }}>Instagram</button>
+
+                                </div>,
                                 sorter: (a, b) => {
                                     return a.position.localeCompare(b.position)
                                 },
