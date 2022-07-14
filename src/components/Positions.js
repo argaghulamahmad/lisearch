@@ -55,8 +55,6 @@ const Positions = () => {
                                 sorter: (a, b) => {
                                     return a.title.localeCompare(b.title)
                                 },
-                                filterMode: 'tree',
-                                filterSearch: true,
                             }
                         ]
                     }

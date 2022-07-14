@@ -54,7 +54,7 @@ const Connections = () => {
                                                    target="_blank" rel="noreferrer">{item}</a>,
                                 sorter: (a, b) => {
                                     return a.localeCompare(b)
-                                },
+                                }
                             }
                         ]
                     }

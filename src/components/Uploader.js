@@ -80,20 +80,6 @@ const Uploader = () => {
             }, []);
         };
 
-        // const generateMapCompanyConnections = (companies, connections) => {
-        //     return companies.reduce((accumulator, currentValue, idx) => {
-        //         let connectionsAtCompany = connections.filter((connection) => {
-        //             return connection.company === currentValue
-        //         })
-        //
-        //         return [...accumulator, {
-        //             idx: idx,
-        //             company: currentValue,
-        //             connections: connectionsAtCompany,
-        //         }]
-        //     }, [])
-        // }
-
         return <div>
             <Dragger {...{
                 name: 'file',
@@ -123,9 +109,6 @@ const Uploader = () => {
                                                 localStorage.setItem('companies', JSON.stringify(
                                                     companies
                                                 ));
-                                                // localStorage.setItem('connectionsAtCompany', JSON.stringify(
-                                                //     connectionsAtCompany
-                                                // ));
                                                 localStorage.setItem('positions', JSON.stringify(
                                                     positions
                                                 ));
