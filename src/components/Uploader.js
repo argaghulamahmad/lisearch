@@ -11,6 +11,10 @@ const Uploader = () => {
             return item.company
         }).filter((x) => x !== "").filter((x, i, a) => a.indexOf(x) === i))];
 
+        const generatePositionsDataList = connections => [...new Set(connections.map((item) => {
+            return item.position
+        }).filter((x) => x !== "").filter((x, i, a) => a.indexOf(x) === i))];
+
         const generateConnectionsDataList = csv => {
             let csvKeys = csv.data.shift();
             let camelCaseKeys = csvKeys.map((key) => {
@@ -86,6 +90,7 @@ const Uploader = () => {
                                                 const connections = generateConnectionsDataList(csv);
                                                 const companies = generateCompaniesDataList(connections);
                                                 const connectionsAtCompany = generateMapCompanyConnections(companies, connections);
+                                                const positions = generatePositionsDataList(connections);
 
                                                 localStorage.setItem('connections', JSON.stringify(
                                                     connections
@@ -95,6 +100,9 @@ const Uploader = () => {
                                                 ));
                                                 localStorage.setItem('connectionsAtCompany', JSON.stringify(
                                                     connectionsAtCompany
+                                                ));
+                                                localStorage.setItem('positions', JSON.stringify(
+                                                    positions
                                                 ));
 
                                                 notification.success({
