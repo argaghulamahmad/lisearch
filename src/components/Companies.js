@@ -18,8 +18,10 @@ const Connections = () => {
 
     const renderAntdButtonToGetRandomCompany = () => {
         return <Button onClick={() => {
-            const company = getRandomCompany();
-            window.open(`https://www.google.com/search?q=${company.company}`, '_blank');
+            for (let i = 0; i < 10; i++) {
+                const company = getRandomCompany();
+                window.open(`https://www.google.com/search?q=${company.company}`, '_blank');
+            }
         }}>Random company</Button>
     }
 
@@ -30,7 +32,7 @@ const Connections = () => {
                     lastUpdateAt !== "" ? null :
                         <Text type="secondary" level={5}> Last updated at {lastUpdateAt}.</Text>
                 }
-                renderAntdButtonToGetRandomCompany()
+                {renderAntdButtonToGetRandomCompany()}
                 <Table
                     showHeader={true}
                     rowKey="idx"
