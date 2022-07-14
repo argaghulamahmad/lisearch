@@ -15,8 +15,8 @@ const Uploader = () => {
                 });
                 return map;
             }, new Map());
-
             const uniqueCompanies = Array.from(companiesMap.values());
+
             return uniqueCompanies.map(company => {
                 let connectionsAtCompany = connections.filter(connection => connection.company === company.company);
                 return {
@@ -36,6 +36,7 @@ const Uploader = () => {
                 });
                 return map;
             }, new Map());
+
             return Array.from(positionsMap.values());
         };
 
