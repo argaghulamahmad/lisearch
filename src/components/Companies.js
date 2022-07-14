@@ -1,5 +1,5 @@
 import {useEffect, useState} from "react";
-import {BackTop, Card, Table} from "antd";
+import {BackTop, Button, Card, Table} from "antd";
 import Text from "antd/es/typography/Text";
 import Uploader from "./Uploader";
 
@@ -12,6 +12,16 @@ const Connections = () => {
         setCompanies(JSON.parse(localStorage.getItem('connectionsAtCompany')))
     }, []);
 
+    const getRandomCompany = () => {
+        return companies[Math.floor(Math.random() * companies.length)];
+    }
+
+    const renderAntdButtonToGetRandomCompany = () => {
+        return <Button onClick={() => {
+            const company = getRandomCompany();
+            window.open(`https://www.google.com/search?q=${company.company}`, '_blank');
+        }}>Random company</Button>
+    }
 
     return (
         companies ? <div>
@@ -20,6 +30,7 @@ const Connections = () => {
                     lastUpdateAt !== "" ? null :
                         <Text type="secondary" level={5}> Last updated at {lastUpdateAt}.</Text>
                 }
+                renderAntdButtonToGetRandomCompany()
                 <Table
                     showHeader={true}
                     rowKey="idx"
