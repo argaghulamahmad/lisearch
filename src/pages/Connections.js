@@ -94,13 +94,13 @@ const Connections = () => {
                                 dataIndex: 'fullName',
                                 key: 'idx',
                                 render: text => <div>
-                                    <button style={{border: "1px solid", padding: "1px"}} onClick={() => {
+                                    <Button style={{border: "1px solid", padding: "1px"}} onClick={() => {
                                         window.open(`https://www.google.com/search?q=${text} site:linkedin.com`, '_blank');
-                                    }}>Linkedin</button>
+                                    }}>Linkedin</Button>
                                     <div style={{marginRight: "1px"}}></div>
-                                    <button style={{border: "1px solid", padding: "1px"}} onClick={() => {
+                                    <Button style={{border: "1px solid", padding: "1px"}} onClick={() => {
                                         window.open(`https://www.google.com/search?q=${text} site:instagram.com `, '_blank');
-                                    }}>Instagram</button>
+                                    }}>Instagram</Button>
 
                                 </div>,
                                 sorter: (a, b) => {
