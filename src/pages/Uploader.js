@@ -1,5 +1,5 @@
 import {InboxOutlined} from '@ant-design/icons';
-import {notification, Upload} from "antd";
+import {Button, notification, Upload} from "antd";
 import {usePapaParse} from 'react-papaparse';
 
 const {Dragger} = Upload;
@@ -81,6 +81,9 @@ const Uploader = () => {
         };
 
         return <div>
+            <Button type="primary" style={{ width: '60%', margin: '20px' }} onClick={() => {
+                window.open('https://www.linkedin.com/mypreferences/d/download-my-data');
+            }}>Download Connections CSV File</Button>
             <Dragger {...{
                 name: 'file',
                 multiple: true,
