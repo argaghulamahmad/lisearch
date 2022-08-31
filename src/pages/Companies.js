@@ -37,6 +37,7 @@ const Connections = () => {
                     }
                 }}>I feel lucky</Button>
             </Space>
+            <br/>
             <Space size="middle" style={{margin: "20px"}}>
                 {
                     ["jobs", "news", "funding"].map((keyword) => {
@@ -45,7 +46,7 @@ const Connections = () => {
                                 const company = getRandomCompany();
                                 window.open(`https://www.google.com/search?q=${company.company} ${keyword}`, '_blank');
                             }
-                        }}>I feel lucky - ${keyword}</Button>
+                        }}>I feel lucky - {keyword}</Button>
                     })
                 }
             </Space>
