@@ -101,7 +101,6 @@ const Connections = () => {
                                     <Button style={{border: "1px solid", padding: "1px"}} onClick={() => {
                                         window.open(`https://www.google.com/search?q=${text} site:instagram.com `, '_blank');
                                     }}>Instagram</Button>
-
                                 </div>,
                                 sorter: (a, b) => {
                                     return a.position.localeCompare(b.position)
