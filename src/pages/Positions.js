@@ -54,7 +54,7 @@ const Positions = () => {
                         showSizeChanger: true,
                         pageSizeOptions: ['10', '50', '100', '200']
                     }}
-                    style={{padding: "0 5% 0 5%"}}
+                    style={{padding: "0 2% 0 2%"}}
                     columns={
                         [
                             {
