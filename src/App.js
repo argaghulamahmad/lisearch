@@ -1,5 +1,3 @@
-import './App.css';
-
 import Connections from "./pages/Connections";
 import Companies from "./pages/Companies";
 import Uploader from './pages/Uploader';
