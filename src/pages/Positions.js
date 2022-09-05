@@ -18,11 +18,11 @@ const Positions = () => {
     }
 
     const renderTableToolbar = () => {
-        return <Space size="middle" style={{margin: "20px" }} >
+        return <Space size="middle" style={{margin: "20px"}}>
             <KeywordSearch onSearch={(searchText) => {
                 let positionsFromLocalStorage = JSON.parse(localStorage.getItem('positions'));
 
-                const filteredPosition = positionsFromLocalStorage.filter(({ title }) => {
+                const filteredPosition = positionsFromLocalStorage.filter(({title}) => {
                     title = title.toLowerCase();
                     return title.includes(searchText.toLowerCase());
                 });

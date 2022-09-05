@@ -1,5 +1,5 @@
 import {InboxOutlined} from '@ant-design/icons';
-import {Button, notification, Upload} from "antd";
+import {Button, notification, Space, Upload} from "antd";
 import {usePapaParse} from 'react-papaparse';
 
 const {Dragger} = Upload;
@@ -8,7 +8,7 @@ const Uploader = () => {
         const {readString} = usePapaParse();
 
         const generateCompaniesDataList = connections => {
-            const companiesMap = connections.reduce(function(map, connection, idx) {
+            const companiesMap = connections.reduce(function (map, connection, idx) {
                 map.set(connection.company, {
                     id: idx,
                     company: connection.company,
@@ -27,7 +27,7 @@ const Uploader = () => {
         };
 
         const generatePositionsDataList = connections => {
-            const positionsMap = connections.reduce(function(map, connection, idx) {
+            const positionsMap = connections.reduce(function (map, connection, idx) {
                 map.set(connection.position + " at " + connection.company, {
                     id: idx,
                     title: connection.position + " at " + connection.company,
@@ -80,10 +80,10 @@ const Uploader = () => {
             }, []);
         };
 
-        return <div>
-            <Button type="primary" style={{ width: '60%', margin: '20px' }} onClick={() => {
+        return <Space direction="vertical" style={{width: '100%'}}>
+            <Button type="primary" style={{width: '100%'}} onClick={() => {
                 window.open('https://www.linkedin.com/mypreferences/d/download-my-data');
-            }}>Download Connections CSV File</Button>
+            }}>Request and Download Connections CSV File</Button>
             <Dragger {...{
                 name: 'file',
                 multiple: true,
@@ -147,7 +147,7 @@ const Uploader = () => {
                 </p>
                 <p className="ant-upload-text">Drop Connections CSV file</p>
             </Dragger>
-        </div>
+        </Space>
     }
 ;
 

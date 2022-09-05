@@ -23,7 +23,7 @@ const Connections = () => {
                 <KeywordSearch onSearch={(searchText) => {
                     let companiesFromLocalStorage = JSON.parse(localStorage.getItem('companies'));
 
-                    const filteredCompanies = companiesFromLocalStorage.filter(({ company }) => {
+                    const filteredCompanies = companiesFromLocalStorage.filter(({company}) => {
                         company = company.toLowerCase();
                         return company.includes(searchText.toLowerCase());
                     });
