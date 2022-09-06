@@ -52,7 +52,7 @@ const Positions = () => {
                     showHeader={true}
                     rowKey="id"
                     pagination={{
-                        defaultPageSize: 100,
+                        defaultPageSize: 10,
                         showSizeChanger: true,
                         pageSizeOptions: ['10', '50', '100', '200']
                     }}
