@@ -81,7 +81,7 @@ const Connections = () => {
                                 render: item => <a href={`https://www.google.com/search?q=${item}`}
                                                    target="_blank" rel="noreferrer">{item}</a>,
                                 sorter: (a, b) => {
-                                    return a.localeCompare(b)
+                                    return a.company.localeCompare(b.company)
                                 }
                             }
                         ]
