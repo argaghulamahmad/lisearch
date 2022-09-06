@@ -2,7 +2,7 @@ import Connections from "./pages/Connections";
 import Companies from "./pages/Companies";
 import Uploader from './pages/Uploader';
 import {BrowserRouter as Router, Link, Route, Switch} from "react-router-dom";
-import {Divider, Menu, Space} from "antd";
+import {Card, Col, Divider, Menu, Row, Space, Statistic} from "antd";
 import Positions from "./pages/Positions";
 
 function App() {
