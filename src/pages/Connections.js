@@ -91,24 +91,7 @@ const Connections = () => {
                                 sorter: (a, b) => {
                                     return a.position.localeCompare(b.position)
                                 },
-                            },
-                            {
-                                title: 'Research',
-                                dataIndex: 'fullName',
-                                key: 'idx',
-                                render: text => <div>
-                                    <Button style={{padding: "1px"}} onClick={() => {
-                                        window.open(`https://www.google.com/search?q=${text} site:linkedin.com`, '_blank');
-                                    }}>Linkedin</Button>
-                                    <div style={{marginRight: "1px"}}></div>
-                                    <Button style={{padding: "1px"}} onClick={() => {
-                                        window.open(`https://www.google.com/search?q=${text} site:instagram.com `, '_blank');
-                                    }}>Instagram</Button>
-                                </div>,
-                                sorter: (a, b) => {
-                                    return a.position.localeCompare(b.position)
-                                },
-                            },
+                            }
                         ]
                     }
                     dataSource={connections}

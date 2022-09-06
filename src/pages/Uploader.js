@@ -105,7 +105,6 @@ const Uploader = () => {
                                                 complete: (csv) => {
                                                     const connections = generateConnectionsDataList(csv);
                                                     const companies = generateCompaniesDataList(connections);
-                                                    // const connectionsAtCompany = generateMapCompanyConnections(companies, connections);
                                                     const positions = generatePositionsDataList(connections);
 
                                                     localStorage.setItem('connections', JSON.stringify(
