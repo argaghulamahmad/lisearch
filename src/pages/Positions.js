@@ -14,10 +14,6 @@ const Positions = () => {
         setPositions(JSON.parse(localStorage.getItem('positions')))
     }, []);
 
-    const getRandomPosition = () => {
-        return positions[Math.floor(Math.random() * positions.length)];
-    }
-
     const renderTableToolbar = () => {
         return <div style={{textAlign: "left"}}>
             <Divider orientation="left" orientationMargin="0">Positions</Divider>
@@ -34,26 +30,17 @@ const Positions = () => {
                 }}></KeywordSearch>
                 <Button onClick={() => {
                     let visitedPositions = JSON.parse(localStorage.getItem('visitedPositions')) || [];
-                    [...Array(5).keys()].reduce((acc, _) => {
-                        let position = getRandomPosition();
-                        while (position.id in visitedPositions) {
-                            position = getRandomPosition();
-                        }
-
-                        const {position: positionName, id} = position;
+                    const unvisitedPositions = positions.filter(({id}) => !visitedPositions.includes(id))
+                    for (let i = 0; i < 5; i++) {
+                        let {id, position, company} = unvisitedPositions[Math.floor(Math.random() * unvisitedPositions.length)];
                         visitedPositions.push(id);
-                        acc.push({
-                            position: positionName,
-                            id: id
-                        })
-                        return acc;
-                    }, []).forEach(({position, id}) => {
                         notification.success({
                             message: "Opening position",
-                            description: `Opening ${position} in new tab!`,
+                            description: `Opening ${position} at ${company} in new tab!`,
                         });
-                        window.open(`https://www.google.com/search?q=${position}`, '_blank');
-                    })
+                        window.open(`https://www.google.com/search?q=${position} at ${company}`, '_blank');
+                    }
+
                     localStorage.setItem('visitedPositions', JSON.stringify(visitedPositions));
                 }}>I feel lucky</Button>
             </Space>
