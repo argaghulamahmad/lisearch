@@ -31,11 +31,25 @@ const Connections = () => {
                     setConnections(filteredPosition);
                 }}></KeywordSearch>
                 <Button onClick={() => {
-                    for (let i = 0; i < 5; i++) {
-                        const connection = getRandomConnection();
-                        const {fullName, position} = connection;
+                    let visitedConnections = JSON.parse(localStorage.getItem('visitedConnections')) || [];
+                    [...Array(5).keys()].reduce((acc, _) => {
+                        let connection = getRandomConnection();
+                        while (connection.id in visitedConnections) {
+                            connection = getRandomConnection();
+                        }
+
+                        const {fullName, position, id} = connection;
+                        acc.push({
+                            fullName: fullName,
+                            position: position,
+                            id: id
+                        })
+                        return acc;
+                    }, []).forEach(({fullName, position, id}) => {
+                        visitedConnections.push(id);
                         window.open(`https://www.google.com/search?q=${fullName + " " + position}`, '_blank');
-                    }
+                    })
+                    localStorage.setItem('visitedConnections', JSON.stringify(visitedConnections));
                 }}>I feel lucky</Button>
             </Space>
         </div>

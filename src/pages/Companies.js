@@ -77,6 +77,7 @@ const Connections = () => {
                             <Space align="baseline" direction="vertical" style={{margin: "20px"}}>
                                 <Button style={{width: "100%"}} onClick={() => {
                                     for (let i = 0; i < 5; i++) {
+                                        console.log("test")
                                         const connection = record.connections[Math.floor(Math.random() * record.connections.length)];
                                         const {fullName, position} = connection;
                                         window.open(`https://www.google.com/search?q=${fullName + " " + position}`, '_blank');
