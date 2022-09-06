@@ -31,10 +31,24 @@ const Connections = () => {
                     setCompanies(filteredCompanies);
                 }}></KeywordSearch>
                 <Button onClick={() => {
-                    for (let i = 0; i < 5; i++) {
-                        const company = getRandomCompany();
-                        window.open(`https://www.google.com/search?q=${company.company}`, '_blank');
-                    }
+                    let visitedCompanies = JSON.parse(localStorage.getItem('visitedCompanies')) || [];
+                    [...Array(5).keys()].reduce((acc, _) => {
+                        let company = getRandomCompany();
+                        while (company.id in visitedCompanies) {
+                            company = getRandomCompany();
+                        }
+
+                        const {company: companyName, id} = company;
+                        acc.push({
+                            company: companyName,
+                            id: id
+                        })
+                        return acc;
+                    }, []).forEach(({company, id}) => {
+                        visitedCompanies.push(id);
+                        window.open(`https://www.google.com/search?q=${company}`, '_blank');
+                    })
+                    localStorage.setItem('visitedCompanies', JSON.stringify(visitedCompanies));
                 }}>I feel lucky</Button>
             </Space>
         </div>
