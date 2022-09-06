@@ -39,15 +39,19 @@ function App() {
                                     <Stats/>
                                 </Route>
                                 <Route exact path="/connections">
+                                    <Stats/>
                                     <Connections/>
                                 </Route>
                                 <Route path="/positions">
+                                    <Stats/>
                                     <Positions/>
                                 </Route>
                                 <Route exact path="/companies">
+                                    <Stats/>
                                     <Companies/>
                                 </Route>
                                 <Route exact path="/upload">
+                                    <Stats/>
                                     <Uploader/>
                                 </Route>
                             </Switch>
