@@ -6,11 +6,9 @@ import {KeywordSearch} from "../components/Search";
 import {CopyToClipboard} from "../components/CopyToClipboard";
 
 const Positions = () => {
-    const [lastUpdateAt, setLastUpdateAt] = useState("");
     const [positions, setPositions] = useState([]);
 
     useEffect(() => {
-        setLastUpdateAt(localStorage.getItem('lastUpdateAt'))
         setPositions(JSON.parse(localStorage.getItem('positions')))
     }, []);
 

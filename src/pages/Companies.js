@@ -6,11 +6,9 @@ import {KeywordSearch} from "../components/Search";
 import {CopyToClipboard} from "../components/CopyToClipboard";
 
 const Connections = () => {
-    const [lastUpdateAt, setLastUpdateAt] = useState("");
     const [companies, setCompanies] = useState([]);
 
     useEffect(() => {
-        setLastUpdateAt(localStorage.getItem('lastUpdateAt'))
         setCompanies(JSON.parse(localStorage.getItem('companies')))
     }, []);
 
