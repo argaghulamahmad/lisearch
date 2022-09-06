@@ -7,14 +7,14 @@ import Positions from "./pages/Positions";
 
 function App() {
     return (
-        <div className="App">
+        <div className="App" style={{textAlign: "center"}}>
             <Router>
                 <div className="App">
                     <div className="AppContent">
                         <h1 style={{padding: "1% 3% 0 3%"}}>Li Search</h1>
                         <Divider orientation="left" plain style={{marginBottom: 0}}>
                         </Divider>
-                        <Space size="middle" align="vertical" style={{margin: "20px"}}>
+                        <Space size="middle" align="vertical">
                             <Menu mode="vertical">
                                 <Menu.Item key="home">
                                     <Link to="/">Connections</Link>
