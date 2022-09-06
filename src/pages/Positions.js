@@ -1,5 +1,5 @@
 import {useEffect, useState} from "react";
-import {BackTop, Button, Card, Divider, Space, Table} from "antd";
+import {BackTop, Button, Card, Divider, notification, Space, Table} from "antd";
 import Text from "antd/es/typography/Text";
 import Uploader from "./Uploader";
 import {KeywordSearch} from "../components/Search";
@@ -48,6 +48,10 @@ const Positions = () => {
                         })
                         return acc;
                     }, []).forEach(({position, id}) => {
+                        notification.success({
+                            message: "Opening position",
+                            description: `Opening ${position} in new tab!`,
+                        });
                         window.open(`https://www.google.com/search?q=${position}`, '_blank');
                     })
                     localStorage.setItem('visitedPositions', JSON.stringify(visitedPositions));

@@ -1,5 +1,5 @@
 import {useEffect, useState} from "react";
-import {BackTop, Button, Card, Divider, Space, Table} from "antd";
+import {BackTop, Button, Card, Divider, notification, Space, Table} from "antd";
 import Text from "antd/es/typography/Text";
 import Uploader from "./Uploader";
 import {KeywordSearch} from "../components/Search";
@@ -48,7 +48,11 @@ const Connections = () => {
                         })
                         return acc;
                     }, []).forEach(({fullName, position, id}) => {
-                        window.open(`https://www.google.com/search?q=${fullName + " " + position}`, '_blank');
+                        notification.success({
+                            message: "Opening connection",
+                            description: `Opening ${fullName} in new tab!`,
+                        });
+                            window.open(`https://www.google.com/search?q=${fullName + " " + position}`, '_blank');
                     })
                     localStorage.setItem('visitedConnections', JSON.stringify(visitedConnections));
                 }}>I feel lucky</Button>

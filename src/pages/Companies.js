@@ -1,5 +1,5 @@
 import {useEffect, useState} from "react";
-import {BackTop, Button, Card, Divider, Space, Table} from "antd";
+import {BackTop, Button, Card, Divider, notification, Space, Table} from "antd";
 import Text from "antd/es/typography/Text";
 import Uploader from "./Uploader";
 import {KeywordSearch} from "../components/Search";
@@ -46,7 +46,11 @@ const Connections = () => {
                             id: id
                         })
                         return acc;
-                    }, []).forEach(({company, id}) => {
+                    }, []).forEach(({company}) => {
+                        notification.success({
+                            message: "Opening company",
+                            description: `Opening ${company} in new tab!`,
+                        });
                         window.open(`https://www.google.com/search?q=${company}`, '_blank');
                     })
                     localStorage.setItem('visitedCompanies', JSON.stringify(visitedCompanies));
@@ -106,7 +110,6 @@ const Connections = () => {
                             <Space align="baseline" direction="vertical" style={{margin: "20px"}}>
                                 <Button style={{width: "100%"}} onClick={() => {
                                     for (let i = 0; i < 5; i++) {
-                                        console.log("test")
                                         const connection = record.connections[Math.floor(Math.random() * record.connections.length)];
                                         const {fullName, position} = connection;
                                         window.open(`https://www.google.com/search?q=${fullName + " " + position}`, '_blank');
