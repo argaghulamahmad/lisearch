@@ -17,17 +17,8 @@ function App() {
                         </Divider>
                         <Space size="middle" align="vertical">
                             <Menu mode="vertical">
-                                <Menu.Item key="stats">
-                                    <Link to="/">Stats</Link>
-                                </Menu.Item>
-                                <Menu.Item key="connections">
-                                    <Link to="/connections">Connections</Link>
-                                </Menu.Item>
-                                <Menu.Item key="positions">
-                                    <Link to="/positions">Positions</Link>
-                                </Menu.Item>
-                                <Menu.Item key="companies">
-                                    <Link to="/companies">Companies</Link>
+                                <Menu.Item key="Home">
+                                    <Link to="/connections">Home</Link>
                                 </Menu.Item>
                                 <Menu.Item key="uploadFile">
                                     <Link to="/upload">Upload</Link>
@@ -51,7 +42,6 @@ function App() {
                                     <Companies/>
                                 </Route>
                                 <Route exact path="/upload">
-                                    <Stats/>
                                     <Uploader/>
                                 </Route>
                             </Switch>
