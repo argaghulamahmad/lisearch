@@ -4,7 +4,6 @@ import Text from "antd/es/typography/Text";
 import Uploader from "./Uploader";
 import {KeywordSearch} from "../components/Search";
 import {CopyToClipboard} from "../components/CopyToClipboard";
-import connections from "./Connections";
 
 const Connections = () => {
     const [lastUpdateAt, setLastUpdateAt] = useState("");
