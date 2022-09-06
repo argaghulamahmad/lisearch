@@ -18,7 +18,7 @@ const Connections = () => {
     }
 
     const renderTableToolbar = () => {
-        return <div>
+        return <div style={{textAlign: "left"}}>
             <Space size="middle" style={{margin: "20px"}}>
                 <KeywordSearch onSearch={(searchText) => {
                     let companiesFromLocalStorage = JSON.parse(localStorage.getItem('companies'));
@@ -36,19 +36,6 @@ const Connections = () => {
                         window.open(`https://www.google.com/search?q=${company.company}`, '_blank');
                     }
                 }}>I feel lucky</Button>
-            </Space>
-            <br/>
-            <Space size="middle" style={{margin: "20px"}}>
-                {
-                    ["jobs", "news", "funding"].map((keyword) => {
-                        return <Button onClick={() => {
-                            for (let i = 0; i < 5; i++) {
-                                const company = getRandomCompany();
-                                window.open(`https://www.google.com/search?q=${company.company} ${keyword}`, '_blank');
-                            }
-                        }}>I feel lucky - {keyword}</Button>
-                    })
-                }
             </Space>
         </div>
     }

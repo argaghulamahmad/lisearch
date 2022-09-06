@@ -18,24 +18,26 @@ const Positions = () => {
     }
 
     const renderTableToolbar = () => {
-        return <Space size="middle" style={{margin: "20px"}}>
-            <KeywordSearch onSearch={(searchText) => {
-                let positionsFromLocalStorage = JSON.parse(localStorage.getItem('positions'));
+        return <div style={{textAlign: "left"}}>
+            <Space size="middle" style={{margin: "20px"}}>
+                <KeywordSearch onSearch={(searchText) => {
+                    let positionsFromLocalStorage = JSON.parse(localStorage.getItem('positions'));
 
-                const filteredPosition = positionsFromLocalStorage.filter(({title}) => {
-                    title = title.toLowerCase();
-                    return title.includes(searchText.toLowerCase());
-                });
+                    const filteredPosition = positionsFromLocalStorage.filter(({title}) => {
+                        title = title.toLowerCase();
+                        return title.includes(searchText.toLowerCase());
+                    });
 
-                setPositions(filteredPosition);
-            }}></KeywordSearch>
-            <Button onClick={() => {
-                for (let i = 0; i < 5; i++) {
-                    const position = getRandomPosition();
-                    window.open(`https://www.google.com/search?q=${position.title}`, '_blank');
-                }
-            }}>I feel lucky</Button>
-        </Space>
+                    setPositions(filteredPosition);
+                }}></KeywordSearch>
+                <Button onClick={() => {
+                    for (let i = 0; i < 5; i++) {
+                        const position = getRandomPosition();
+                        window.open(`https://www.google.com/search?q=${position.title}`, '_blank');
+                    }
+                }}>I feel lucky</Button>
+            </Space>
+        </div>
     }
 
     return (

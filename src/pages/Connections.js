@@ -18,25 +18,27 @@ const Connections = () => {
     }
 
     const renderAntdButtonToGetRandomConnection = () => {
-        return <Space size="middle" style={{margin: "20px"}}>
-            <KeywordSearch onSearch={(searchText) => {
-                let connectionsFromLocalStorage = JSON.parse(localStorage.getItem('connections'));
+        return <div style={{textAlign: "left"}}>
+            <Space size="middle" style={{margin: "20px"}}>
+                <KeywordSearch onSearch={(searchText) => {
+                    let connectionsFromLocalStorage = JSON.parse(localStorage.getItem('connections'));
 
-                const filteredPosition = connectionsFromLocalStorage.filter(({fullName}) => {
-                    fullName = fullName.toLowerCase();
-                    return fullName.includes(searchText.toLowerCase());
-                });
+                    const filteredPosition = connectionsFromLocalStorage.filter(({fullName}) => {
+                        fullName = fullName.toLowerCase();
+                        return fullName.includes(searchText.toLowerCase());
+                    });
 
-                setConnections(filteredPosition);
-            }}></KeywordSearch>
-            <Button onClick={() => {
-                for (let i = 0; i < 5; i++) {
-                    const connection = getRandomConnection();
-                    const {fullName, position} = connection;
-                    window.open(`https://www.google.com/search?q=${fullName + " " + position}`, '_blank');
-                }
-            }}>I feel lucky</Button>
-        </Space>
+                    setConnections(filteredPosition);
+                }}></KeywordSearch>
+                <Button onClick={() => {
+                    for (let i = 0; i < 5; i++) {
+                        const connection = getRandomConnection();
+                        const {fullName, position} = connection;
+                        window.open(`https://www.google.com/search?q=${fullName + " " + position}`, '_blank');
+                    }
+                }}>I feel lucky</Button>
+            </Space>
+        </div>
     }
 
 
