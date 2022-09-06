@@ -19,7 +19,7 @@ const Positions = () => {
 
     const renderTableToolbar = () => {
         return <div style={{textAlign: "left"}}>
-            <Divider orientation="left">Positions</Divider>
+            <Divider orientation="left" orientationMargin="0">Positions</Divider>
             <Space size="middle" style={{paddingBottom: "2%"}}>
                 <KeywordSearch onSearch={(searchText) => {
                     let positionsFromLocalStorage = JSON.parse(localStorage.getItem('positions'));

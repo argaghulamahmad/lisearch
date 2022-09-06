@@ -81,7 +81,7 @@ const Uploader = () => {
         };
 
         return <div style={{width: "1200px"}}>
-            <Divider orientation="left">Uploader</Divider>
+            <Divider orientation="left" orientationMargin="0">Uploader</Divider>
             <Space style={{width: "100%"}} direction="vertical">
                 <Button type="primary" style={{width: '100%'}} onClick={() => {
                     window.open('https://www.linkedin.com/mypreferences/d/download-my-data');
