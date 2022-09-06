@@ -41,13 +41,13 @@ const Connections = () => {
 
 
     return (
-        connections ? <div>
+        connections ? <div style={{width: "1200px"}}>
+            {
+                lastUpdateAt !== "" ? null :
+                    <Text type="secondary" level={5}> Last updated at {lastUpdateAt}.</Text>
+            }
+            {renderAntdButtonToGetRandomConnection()}
             <Card>
-                {
-                    lastUpdateAt !== "" ? null :
-                        <Text type="secondary" level={5}> Last updated at {lastUpdateAt}.</Text>
-                }
-                {renderAntdButtonToGetRandomConnection()}
                 <Table
                     showHeader={true}
                     rowKey="id"

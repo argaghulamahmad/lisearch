@@ -80,74 +80,76 @@ const Uploader = () => {
             }, []);
         };
 
-        return <Space direction="vertical" style={{width: '100%'}}>
-            <Button type="primary" style={{width: '100%'}} onClick={() => {
-                window.open('https://www.linkedin.com/mypreferences/d/download-my-data');
-            }}>Request and Download Connections CSV File</Button>
-            <Dragger {...{
-                name: 'file',
-                multiple: true,
+        return <div style={{width: "1200px"}}>
+            <Space style={{width: "100%"}} direction="vertical">
+                <Button type="primary" style={{width: '100%'}} onClick={() => {
+                    window.open('https://www.linkedin.com/mypreferences/d/download-my-data');
+                }}>Request and Download Connections CSV File</Button>
+                <Dragger {...{
+                    name: 'file',
+                    multiple: true,
 
-                onChange(e) {
-                    Array.from(e.fileList).forEach(file => {
-                        const reader = new FileReader();
-                        const {originFileObj} = file;
-                        reader.readAsText(originFileObj, "UTF-8");
-                        if (file.name === "Connections.csv") {
-                            reader.onload = function (evt) {
-                                let result = evt.target.result;
-                                switch (file.name) {
-                                    case "Connections.csv":
-                                        readString(result, {
-                                            worker: true,
-                                            complete: (csv) => {
-                                                const connections = generateConnectionsDataList(csv);
-                                                const companies = generateCompaniesDataList(connections);
-                                                // const connectionsAtCompany = generateMapCompanyConnections(companies, connections);
-                                                const positions = generatePositionsDataList(connections);
+                    onChange(e) {
+                        Array.from(e.fileList).forEach(file => {
+                            const reader = new FileReader();
+                            const {originFileObj} = file;
+                            reader.readAsText(originFileObj, "UTF-8");
+                            if (file.name === "Connections.csv") {
+                                reader.onload = function (evt) {
+                                    let result = evt.target.result;
+                                    switch (file.name) {
+                                        case "Connections.csv":
+                                            readString(result, {
+                                                worker: true,
+                                                complete: (csv) => {
+                                                    const connections = generateConnectionsDataList(csv);
+                                                    const companies = generateCompaniesDataList(connections);
+                                                    // const connectionsAtCompany = generateMapCompanyConnections(companies, connections);
+                                                    const positions = generatePositionsDataList(connections);
 
-                                                localStorage.setItem('connections', JSON.stringify(
-                                                    connections
-                                                ));
-                                                localStorage.setItem('companies', JSON.stringify(
-                                                    companies
-                                                ));
-                                                localStorage.setItem('positions', JSON.stringify(
-                                                    positions
-                                                ));
+                                                    localStorage.setItem('connections', JSON.stringify(
+                                                        connections
+                                                    ));
+                                                    localStorage.setItem('companies', JSON.stringify(
+                                                        companies
+                                                    ));
+                                                    localStorage.setItem('positions', JSON.stringify(
+                                                        positions
+                                                    ));
 
-                                                notification.success({
-                                                    message: 'File Connections.csv valid',
-                                                    description: 'Connections record updated!',
-                                                });
-                                            },
-                                        });
-                                        break;
-                                    default:
-                                        notification.error({
-                                            message: 'Not a valid csv file',
-                                        });
+                                                    notification.success({
+                                                        message: 'File Connections.csv valid',
+                                                        description: 'Connections record updated!',
+                                                    });
+                                                },
+                                            });
+                                            break;
+                                        default:
+                                            notification.error({
+                                                message: 'Not a valid csv file',
+                                            });
+                                    }
                                 }
-                            }
-                            reader.onerror = function (evt) {
+                                reader.onerror = function (evt) {
+                                    notification.error({
+                                        message: 'Not valid CSV file',
+                                    });
+                                }
+                            } else {
                                 notification.error({
-                                    message: 'Not valid CSV file',
+                                    message: 'Please drop Connections CSV file',
                                 });
                             }
-                        } else {
-                            notification.error({
-                                message: 'Please drop Connections CSV file',
-                            });
-                        }
-                    });
-                },
-            }}>
-                <p className="ant-upload-drag-icon">
-                    <InboxOutlined/>
-                </p>
-                <p className="ant-upload-text">Drop Connections CSV file</p>
-            </Dragger>
-        </Space>
+                        });
+                    },
+                }}>
+                    <p className="ant-upload-drag-icon">
+                        <InboxOutlined/>
+                    </p>
+                    <p className="ant-upload-text">Drop Connections CSV file</p>
+                </Dragger>
+            </Space>
+        </div>
     }
 ;
 
