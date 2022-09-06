@@ -11,7 +11,7 @@ function App() {
             <Router>
                 <div className="App">
                     <div className="AppContent">
-                        <h1 style={{padding: "3% 3% 0 3%"}}>Li Search</h1>
+                        <h1 style={{padding: "1% 3% 0 3%"}}>Li Search</h1>
                         <Divider orientation="left" plain style={{marginBottom: 0}}>
                         </Divider>
                         <Space size="middle" align="vertical" style={{margin: "20px"}}>
