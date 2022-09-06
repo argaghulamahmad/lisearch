@@ -100,11 +100,18 @@ const Connections = () => {
                         expandedRowRender: record => <div>
                             <Space align="baseline" direction="vertical" style={{margin: "20px"}}>
                                 <Button style={{width: "100%"}} onClick={() => {
+                                    let visitedConnections = JSON.parse(localStorage.getItem('visitedConnections')) || [];
+                                    const unvisitedConnections = record.connections.filter(({id}) => !visitedConnections.includes(id))
                                     for (let i = 0; i < 5; i++) {
-                                        const connection = record.connections[Math.floor(Math.random() * record.connections.length)];
-                                        const {fullName, position} = connection;
-                                        window.open(`https://www.google.com/search?q=${fullName + " " + position}`, '_blank');
+                                        let {id, fullName} = unvisitedConnections[Math.floor(Math.random() * unvisitedConnections.length)];
+                                        visitedConnections.push(id);
+                                        notification.success({
+                                            message: "Opening connection",
+                                            description: `Opening ${fullName} in new tab!`,
+                                        });
+                                        window.open(`https://www.google.com/search?q=${fullName}`, '_blank');
                                     }
+                                    localStorage.setItem('visitedConnections', JSON.stringify(visitedConnections));
                                 }}>I feel lucky</Button>
                             </Space>
                             <Table
