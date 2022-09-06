@@ -14,10 +14,6 @@ const Connections = () => {
         setCompanies(JSON.parse(localStorage.getItem('companies')))
     }, []);
 
-    const getRandomCompany = () => {
-        return companies[Math.floor(Math.random() * companies.length)];
-    }
-
     const renderTableToolbar = () => {
         return <div style={{textAlign: "left"}}>
             <Space size="middle" style={{paddingBottom: "2%"}}>
@@ -86,6 +82,7 @@ const Connections = () => {
                                 title: 'Number of Employee',
                                 dataIndex: 'connections',
                                 key: 'id',
+                                defaultSortOrder: 'descend',
                                 render: connections => <div>
                                     {connections.length}
                                 </div>,

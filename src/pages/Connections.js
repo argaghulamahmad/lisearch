@@ -14,10 +14,6 @@ const Connections = () => {
         setConnections(JSON.parse(localStorage.getItem('connections')))
     }, []);
 
-    const getRandomConnection = () => {
-        return connections[Math.floor(Math.random() * connections.length)];
-    }
-
     const renderAntdButtonToGetRandomConnection = () => {
         return <div style={{textAlign: "left"}}>
             <Space size="middle" style={{paddingBottom: "2%"}}>
