@@ -1,5 +1,5 @@
 import {useEffect, useState} from "react";
-import {BackTop, Button, Card, Space, Table} from "antd";
+import {BackTop, Button, Card, Divider, Space, Table} from "antd";
 import Text from "antd/es/typography/Text";
 import Uploader from "./Uploader";
 import {KeywordSearch} from "../components/Search";
@@ -19,7 +19,7 @@ const Connections = () => {
 
     const renderAntdButtonToGetRandomConnection = () => {
         return <div style={{textAlign: "left"}}>
-            <Space size="middle" style={{margin: "20px"}}>
+            <Space size="middle" style={{paddingBottom: "2%"}}>
                 <KeywordSearch onSearch={(searchText) => {
                     let connectionsFromLocalStorage = JSON.parse(localStorage.getItem('connections'));
 
@@ -44,6 +44,7 @@ const Connections = () => {
 
     return (
         connections ? <div style={{width: "1200px"}}>
+            <Divider orientation="left">Connections</Divider>
             {
                 lastUpdateAt !== "" ? null :
                     <Text type="secondary" level={5}> Last updated at {lastUpdateAt}.</Text>

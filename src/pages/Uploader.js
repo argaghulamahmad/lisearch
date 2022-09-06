@@ -1,5 +1,5 @@
 import {InboxOutlined} from '@ant-design/icons';
-import {Button, notification, Space, Upload} from "antd";
+import {Button, Divider, notification, Space, Upload} from "antd";
 import {usePapaParse} from 'react-papaparse';
 
 const {Dragger} = Upload;
@@ -81,6 +81,7 @@ const Uploader = () => {
         };
 
         return <div style={{width: "1200px"}}>
+            <Divider orientation="left">Uploader</Divider>
             <Space style={{width: "100%"}} direction="vertical">
                 <Button type="primary" style={{width: '100%'}} onClick={() => {
                     window.open('https://www.linkedin.com/mypreferences/d/download-my-data');

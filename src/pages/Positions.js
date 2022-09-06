@@ -1,5 +1,5 @@
 import {useEffect, useState} from "react";
-import {BackTop, Button, Card, Space, Table} from "antd";
+import {BackTop, Button, Card, Divider, Space, Table} from "antd";
 import Text from "antd/es/typography/Text";
 import Uploader from "./Uploader";
 import {KeywordSearch} from "../components/Search";
@@ -19,7 +19,8 @@ const Positions = () => {
 
     const renderTableToolbar = () => {
         return <div style={{textAlign: "left"}}>
-            <Space size="middle" style={{margin: "20px"}}>
+            <Divider orientation="left">Positions</Divider>
+            <Space size="middle" style={{paddingBottom: "2%"}}>
                 <KeywordSearch onSearch={(searchText) => {
                     let positionsFromLocalStorage = JSON.parse(localStorage.getItem('positions'));
 
