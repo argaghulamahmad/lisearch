@@ -4,6 +4,7 @@ import Text from "antd/es/typography/Text";
 import Uploader from "./Uploader";
 import {KeywordSearch} from "../components/Search";
 import {CopyToClipboard} from "../components/CopyToClipboard";
+import connections from "./Connections";
 
 const Connections = () => {
     const [lastUpdateAt, setLastUpdateAt] = useState("");
@@ -79,13 +80,24 @@ const Connections = () => {
                                 title: 'Company',
                                 dataIndex: 'company',
                                 key: 'id',
-                                render: item => <div>
-                                    <a href={`https://www.google.com/search?q=${item}`}
-                                       target="_blank" rel="noreferrer">{item}</a>
-                                    <CopyToClipboard value={item}></CopyToClipboard>
+                                render: companyName => <div>
+                                    <a href={`https://www.google.com/search?q=${companyName}`}
+                                       target="_blank" rel="noreferrer">{companyName}</a>
+                                    <CopyToClipboard value={companyName}></CopyToClipboard>
                                 </div>,
                                 sorter: (a, b) => {
                                     return a.company.localeCompare(b.company)
+                                }
+                            },
+                            {
+                                title: 'Number of Employee',
+                                dataIndex: 'connections',
+                                key: 'id',
+                                render: connections => <div>
+                                    {connections.length}
+                                </div>,
+                                sorter: (a, b) => {
+                                    return a.connections.length > b.connections.length ? 1 : a.connections.length < b.connections.length ? -1 : 0;
                                 }
                             }
                         ]
