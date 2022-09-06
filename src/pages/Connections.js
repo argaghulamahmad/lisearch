@@ -43,7 +43,6 @@ const Connections = () => {
                         });
                         window.open(`https://www.google.com/search?q=${fullName}`, '_blank');
                     }
-
                     localStorage.setItem('visitedConnections', JSON.stringify(visitedConnections));
                 }}>I feel lucky</Button>
             </Space>

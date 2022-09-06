@@ -40,7 +40,6 @@ const Positions = () => {
                         });
                         window.open(`https://www.google.com/search?q=${position} at ${company}`, '_blank');
                     }
-
                     localStorage.setItem('visitedPositions', JSON.stringify(visitedPositions));
                 }}>I feel lucky</Button>
             </Space>
