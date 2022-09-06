@@ -2,7 +2,7 @@ import React from "react";
 import {Card, Col, Row, Statistic} from "antd";
 
 export const Stats = () => (
-    <div>
+    <div style={{width: "1200px"}}>
         <Row gutter={16}>
             <Col span={8}>
                 <Card>

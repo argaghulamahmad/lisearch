@@ -4,6 +4,7 @@ import Uploader from './pages/Uploader';
 import {BrowserRouter as Router, Link, Route, Switch} from "react-router-dom";
 import {Divider, Menu, Space} from "antd";
 import Positions from "./pages/Positions";
+import {Stats} from "./components/Stats";
 
 function App() {
     return (
@@ -16,8 +17,11 @@ function App() {
                         </Divider>
                         <Space size="middle" align="vertical">
                             <Menu mode="vertical">
-                                <Menu.Item key="home">
-                                    <Link to="/">Connections</Link>
+                                <Menu.Item key="stats">
+                                    <Link to="/">Stats</Link>
+                                </Menu.Item>
+                                <Menu.Item key="connections">
+                                    <Link to="/connections">Connections</Link>
                                 </Menu.Item>
                                 <Menu.Item key="positions">
                                     <Link to="/positions">Positions</Link>
@@ -32,6 +36,9 @@ function App() {
 
                             <Switch>
                                 <Route exact path="/">
+                                    <Stats/>
+                                </Route>
+                                <Route exact path="/connections">
                                     <Connections/>
                                 </Route>
                                 <Route path="/positions">
