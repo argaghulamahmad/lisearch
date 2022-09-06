@@ -47,10 +47,6 @@ const Connections = () => {
     return (
         connections ? <div style={{width: "1200px"}}>
             <Divider orientation="left" orientationMargin="0">Connections</Divider>
-            {
-                lastUpdateAt !== "" ? null :
-                    <Text type="secondary" level={5}> Last updated at {lastUpdateAt}.</Text>
-            }
             {renderAntdButtonToGetRandomConnection()}
             <Card>
                 <Table

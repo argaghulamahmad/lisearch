@@ -46,10 +46,6 @@ const Connections = () => {
     return (
         companies ? <div style={{width: "1200px"}}>
             <Divider orientation="left" orientationMargin="0">Companies</Divider>
-            {
-                lastUpdateAt !== "" ? null :
-                    <Text type="secondary" level={5}> Last updated at {lastUpdateAt}.</Text>
-            }
             {renderTableToolbar()}
             <Card>
                 <Table

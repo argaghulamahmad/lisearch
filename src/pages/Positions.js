@@ -46,10 +46,6 @@ const Positions = () => {
 
     return (
         positions ? <div style={{width: "1200px"}}>
-            {
-                lastUpdateAt !== "" ? null :
-                    <Text type="secondary" level={5}> Last updated at {lastUpdateAt}.</Text>
-            }
             {renderTableToolbar()}
             <Card>
                 <Table
