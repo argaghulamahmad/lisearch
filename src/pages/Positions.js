@@ -32,10 +32,24 @@ const Positions = () => {
                     setPositions(filteredPosition);
                 }}></KeywordSearch>
                 <Button onClick={() => {
-                    for (let i = 0; i < 5; i++) {
-                        const position = getRandomPosition();
-                        window.open(`https://www.google.com/search?q=${position.title}`, '_blank');
-                    }
+                    let visitedPositions = JSON.parse(localStorage.getItem('visitedPositions')) || [];
+                    [...Array(5).keys()].reduce((acc, _) => {
+                        let position = getRandomPosition();
+                        while (position.id in visitedPositions) {
+                            position = getRandomPosition();
+                        }
+
+                        const {position: positionName, id} = position;
+                        acc.push({
+                            position: positionName,
+                            id: id
+                        })
+                        return acc;
+                    }, []).forEach(({position, id}) => {
+                        visitedPositions.push(id);
+                        window.open(`https://www.google.com/search?q=${position}`, '_blank');
+                    })
+                    localStorage.setItem('visitedPositions', JSON.stringify(visitedPositions));
                 }}>I feel lucky</Button>
             </Space>
         </div>
