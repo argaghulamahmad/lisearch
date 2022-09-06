@@ -41,13 +41,13 @@ const Connections = () => {
                         }
 
                         const {company: companyName, id} = company;
+                        visitedCompanies.push(id);
                         acc.push({
                             company: companyName,
                             id: id
                         })
                         return acc;
                     }, []).forEach(({company, id}) => {
-                        visitedCompanies.push(id);
                         window.open(`https://www.google.com/search?q=${company}`, '_blank');
                     })
                     localStorage.setItem('visitedCompanies', JSON.stringify(visitedCompanies));

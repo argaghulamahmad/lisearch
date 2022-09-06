@@ -40,6 +40,7 @@ const Connections = () => {
                         }
 
                         const {fullName, position, id} = connection;
+                        visitedConnections.push(id);
                         acc.push({
                             fullName: fullName,
                             position: position,
@@ -47,7 +48,6 @@ const Connections = () => {
                         })
                         return acc;
                     }, []).forEach(({fullName, position, id}) => {
-                        visitedConnections.push(id);
                         window.open(`https://www.google.com/search?q=${fullName + " " + position}`, '_blank');
                     })
                     localStorage.setItem('visitedConnections', JSON.stringify(visitedConnections));

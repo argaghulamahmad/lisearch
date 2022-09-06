@@ -41,13 +41,13 @@ const Positions = () => {
                         }
 
                         const {position: positionName, id} = position;
+                        visitedPositions.push(id);
                         acc.push({
                             position: positionName,
                             id: id
                         })
                         return acc;
                     }, []).forEach(({position, id}) => {
-                        visitedPositions.push(id);
                         window.open(`https://www.google.com/search?q=${position}`, '_blank');
                     })
                     localStorage.setItem('visitedPositions', JSON.stringify(visitedPositions));
