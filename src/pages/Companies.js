@@ -3,6 +3,7 @@ import {BackTop, Button, Card, Divider, Space, Table} from "antd";
 import Text from "antd/es/typography/Text";
 import Uploader from "./Uploader";
 import {KeywordSearch} from "../components/Search";
+import {CopyToClipboard} from "../components/CopyToClipboard";
 
 const Connections = () => {
     const [lastUpdateAt, setLastUpdateAt] = useState("");
@@ -78,8 +79,11 @@ const Connections = () => {
                                 title: 'Company',
                                 dataIndex: 'company',
                                 key: 'id',
-                                render: item => <a href={`https://www.google.com/search?q=${item}`}
-                                                   target="_blank" rel="noreferrer">{item}</a>,
+                                render: item => <div>
+                                    <a href={`https://www.google.com/search?q=${item}`}
+                                       target="_blank" rel="noreferrer">{item}</a>
+                                    <CopyToClipboard value={item}></CopyToClipboard>
+                                </div>,
                                 sorter: (a, b) => {
                                     return a.company.localeCompare(b.company)
                                 }
@@ -105,8 +109,11 @@ const Connections = () => {
                                             title: 'Full Name',
                                             dataIndex: 'fullName',
                                             key: 'id',
-                                            render: text => <a href={`https://www.google.com/search?q=${text}`}
-                                                               target="_blank" rel="noreferrer">{text}</a>,
+                                            render: text => <div>
+                                                <a href={`https://www.google.com/search?q=${text}`}
+                                                   target="_blank" rel="noreferrer">{text}</a>
+                                                <CopyToClipboard value={text}></CopyToClipboard>
+                                            </div>,
                                             sorter: (a, b) => {
                                                 return a.fullName.localeCompare(b.fullName)
                                             },
@@ -115,8 +122,11 @@ const Connections = () => {
                                             title: 'Position',
                                             dataIndex: 'position',
                                             key: 'id',
-                                            render: text => <a href={`https://www.google.com/search?q=${text}`}
-                                                               target="_blank" rel="noreferrer">{text}</a>,
+                                            render: text => <div>
+                                                <a href={`https://www.google.com/search?q=${text}`}
+                                                   target="_blank" rel="noreferrer">{text}</a>
+                                                <CopyToClipboard value={text}></CopyToClipboard>
+                                            </div>,
 
                                         }
                                     ]
