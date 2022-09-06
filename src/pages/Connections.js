@@ -33,27 +33,17 @@ const Connections = () => {
                 }}></KeywordSearch>
                 <Button onClick={() => {
                     let visitedConnections = JSON.parse(localStorage.getItem('visitedConnections')) || [];
-                    [...Array(5).keys()].reduce((acc, _) => {
-                        let connection = getRandomConnection();
-                        while (connection.id in visitedConnections) {
-                            connection = getRandomConnection();
-                        }
-
-                        const {fullName, position, id} = connection;
+                    const unvisitedConnections = connections.filter(({id}) => !visitedConnections.includes(id))
+                    for (let i = 0; i < 5; i++) {
+                        let {id, fullName} = unvisitedConnections[Math.floor(Math.random() * unvisitedConnections.length)];
                         visitedConnections.push(id);
-                        acc.push({
-                            fullName: fullName,
-                            position: position,
-                            id: id
-                        })
-                        return acc;
-                    }, []).forEach(({fullName, position, id}) => {
                         notification.success({
                             message: "Opening connection",
                             description: `Opening ${fullName} in new tab!`,
                         });
-                            window.open(`https://www.google.com/search?q=${fullName + " " + position}`, '_blank');
-                    })
+                        window.open(`https://www.google.com/search?q=${fullName}`, '_blank');
+                    }
+
                     localStorage.setItem('visitedConnections', JSON.stringify(visitedConnections));
                 }}>I feel lucky</Button>
             </Space>
