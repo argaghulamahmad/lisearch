@@ -41,14 +41,17 @@ const Config = () => {
                 <Space direction="vertical" size="small" style={{display: 'flex'}}>
                     <Button type="danger" style={{width: '100%'}} onClick={
                         () => {
-                            // localStorage.removeItem("visitedRandomUsernames");
+                            localStorage.removeItem('visitedConnections');
+                            localStorage.removeItem('visitedCompanies');
+                            localStorage.removeItem('visitedPositions');
+
                             notification.success({
                                 message: 'Success',
-                                description: 'Visited Random Profiles data has been reset!',
+                                description: 'All visited random profiles data has been reset!',
                             })
                         }
                     }>
-                        Reset feel lucky generator
+                        Reset all feel lucky connections generator
                     </Button>
                     <Button type="danger" style={{width: '100%'}} onClick={
                         () => {
