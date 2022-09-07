@@ -121,6 +121,13 @@ const Uploader = () => {
                                                         message: 'File Connections.csv valid',
                                                         description: 'Connections record updated!',
                                                     });
+
+                                                    setInterval(() => {
+                                                        window.location.href = '../';
+                                                    }, 1000);
+                                                    notification.info({
+                                                        message: 'Redirect to home page in 1 seconds',
+                                                    })
                                                 },
                                             });
                                             break;
