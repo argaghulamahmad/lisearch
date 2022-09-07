@@ -28,7 +28,7 @@ const Config = () => {
                             <Form.Item name="feelLuckyGeneratorCounts" noStyle>
                                 <InputNumber min={1} max={20}/>
                             </Form.Item>
-                            <span className="ant-form-text"> profiles</span>
+                            <span className="ant-form-text"> record</span>
                         </Form.Item>
                         <Form.Item>
                             <Button type="primary" style={{width: '100%'}} htmlType="submit">
@@ -41,7 +41,7 @@ const Config = () => {
                 <Space direction="vertical" size="small" style={{display: 'flex'}}>
                     <Button type="danger" style={{width: '100%'}} onClick={
                         () => {
-                            localStorage.removeItem("visitedRandomUsernames");
+                            // localStorage.removeItem("visitedRandomUsernames");
                             notification.success({
                                 message: 'Success',
                                 description: 'Visited Random Profiles data has been reset!',
