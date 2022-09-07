@@ -16,7 +16,7 @@ export const Stats = () => {
                           }}>
                         <Statistic
                             title="Connections"
-                            value={12}
+                            value={JSON.parse(localStorage.getItem('connections')).length}
                         />
                     </Card>
                 </Col>
@@ -27,7 +27,7 @@ export const Stats = () => {
                           }}>
                         <Statistic
                             title="Companies"
-                            value={12}
+                            value={JSON.parse(localStorage.getItem('companies')).length}
                         />
                     </Card>
                 </Col>
@@ -38,7 +38,7 @@ export const Stats = () => {
                           }}>
                         <Statistic
                             title="Positions"
-                            value={3}
+                            value={JSON.parse(localStorage.getItem('positions')).length}
                         />
                     </Card>
                 </Col>
