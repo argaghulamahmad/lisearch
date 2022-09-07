@@ -1,5 +1,5 @@
 import React from "react";
-import {Card, Col, Row, Statistic} from "antd";
+import {Card, Col, Empty, Row, Statistic} from "antd";
 import {useHistory} from "react-router-dom";
 
 
@@ -7,7 +7,7 @@ export const Stats = () => {
     const history = useHistory();
 
     return (
-        <div style={{width: "1200px"}}>
+        JSON.parse(localStorage.getItem('connections')) ? <div style={{width: "1200px"}}>
             <Row gutter={16}>
                 <Col span={8}>
                     <Card hoverable={true}
@@ -43,6 +43,8 @@ export const Stats = () => {
                     </Card>
                 </Col>
             </Row>
+        </div> : <div style={{width: "1200px"}}>
+            <Empty/>
         </div>
     );
 };

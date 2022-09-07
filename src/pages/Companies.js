@@ -1,6 +1,5 @@
 import {useEffect, useState} from "react";
 import {BackTop, Button, Card, Divider, notification, Space, Table} from "antd";
-import Text from "antd/es/typography/Text";
 import Uploader from "./Uploader";
 import {KeywordSearch} from "../components/Search";
 import {CopyToClipboard} from "../components/CopyToClipboard";
