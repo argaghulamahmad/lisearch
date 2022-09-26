@@ -116,59 +116,71 @@ const Uploader = () => {
                                                         description: 'File Connections.csv valid!',
                                                     });
 
+                                                    const clearConnectionsRecordsPromise = db.connections.clear();
+                                                    const clearCompaniesRecordsPromise = db.companies.clear();
+                                                    const clearPositionsRecordsPromise = db.positions.clear();
 
-                                                    db.connections.bulkAdd(connections).then(() => {
+                                                    const bulkAddConnectionsRecordsPromise = db.connections.bulkAdd(connections);
+                                                    const bulkAddCompaniesRecordsPromise = db.companies.bulkAdd(companies);
+                                                    const bulkAddPositionsRecordsPromise = db.positions.bulkAdd(positions);
+
+                                                    let databaseProcessPromiseExecution = async () => {
+                                                        await Promise.all([
+                                                            clearConnectionsRecordsPromise,
+                                                            clearCompaniesRecordsPromise,
+                                                            clearPositionsRecordsPromise,
+                                                            bulkAddConnectionsRecordsPromise.then(() => {
+                                                                notification.success({
+                                                                    message: 'Connections processed successfully!',
+                                                                    description: 'Done adding ' + connections.length + ' connections to the database.',
+                                                                });
+                                                            }).catch(Dexie.BulkError, e => {
+                                                                notification.error({
+                                                                    message: 'Error processing connections!',
+                                                                    description: 'There is an error when store connections to the database.',
+                                                                })
+                                                            }),
+                                                            bulkAddCompaniesRecordsPromise.then(() => {
+                                                                notification.success({
+                                                                    message: 'Companies processed successfully!',
+                                                                    description: 'Done adding ' + companies.length + ' companies to the database.',
+                                                                });
+                                                            }).catch(Dexie.BulkError, e => {
+                                                                notification.error({
+                                                                    message: 'Error processing companies!',
+                                                                    description: 'There is an error when store companies to the database.',
+                                                                })
+                                                            }),
+                                                            bulkAddPositionsRecordsPromise.then(() => {
+                                                                notification.success({
+                                                                    message: 'Positions processed successfully!',
+                                                                    description: 'Done adding ' + positions.length + ' positions to the database.',
+                                                                });
+                                                            }).catch(Dexie.BulkError, e => {
+                                                                notification.error({
+                                                                    message: 'Error processing positions!',
+                                                                    description: 'There is an error when store positions to the database.',
+                                                                })
+                                                            }),
+                                                        ]);
+                                                    }
+
+                                                    await sleep(1000);
+
+                                                    databaseProcessPromiseExecution().then(() => {
                                                         notification.success({
-                                                            message: 'Connections processed successfully!',
-                                                            description: 'Done adding ' + connections.length + ' connections to the database.',
+                                                            message: 'File processed successfully!',
+                                                            description: 'Done processing file Connections.csv',
                                                         });
-                                                    }).catch(Dexie.BulkError, e => {
-                                                        notification.error({
-                                                            message: 'Error processing connections!',
-                                                            description: 'There is an error when store connections to the database.',
+
+                                                        setInterval(() => {
+                                                            window.location.href = '../';
+                                                        }, 2000);
+
+                                                        notification.info({
+                                                            message: 'You will redirected to home page automatically.',
+                                                            description: 'You will redirected to home page automatically after all process complete.',
                                                         })
-                                                    });
-
-                                                    await sleep(2000);
-
-                                                    db.companies.bulkAdd(companies).then(() => {
-                                                        notification.success({
-                                                            message: 'Companies processed successfully!',
-                                                            description: 'Done adding ' + companies.length + ' companies to the database.',
-                                                        });
-                                                    }).catch(Dexie.BulkError, e => {
-                                                        notification.error({
-                                                            message: 'Error processing companies!',
-                                                            description: 'There is an error when store companies to the database.',
-                                                        })
-                                                    });
-
-                                                    await sleep(2000);
-
-                                                    db.positions.bulkAdd(positions).then(() => {
-                                                        notification.success({
-                                                            message: 'Positions processed successfully!',
-                                                            description: 'Done adding ' + positions.length + ' positions to the database.',
-                                                        });
-                                                    }).catch(Dexie.BulkError, e => {
-                                                        notification.error({
-                                                            message: 'Error processing positions!',
-                                                            description: 'There is an error when store positions to the database.',
-                                                        })
-                                                    })
-
-                                                    await sleep(2000);
-
-                                                    notification.success({
-                                                        message: 'File processed successfully!',
-                                                        description: 'Done processing file Connections.csv',
-                                                    });
-
-                                                    setInterval(() => {
-                                                        window.location.href = '../';
-                                                    }, 15000);
-                                                    notification.info({
-                                                        message: 'You will redirected to home page automatically after all process complete.',
                                                     })
                                                 },
                                             });
