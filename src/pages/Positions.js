@@ -3,12 +3,15 @@ import {BackTop, Button, Card, Divider, notification, Space, Table} from "antd";
 import Uploader from "./Uploader";
 import {KeywordSearch} from "../components/Search";
 import {CopyToClipboard} from "../components/CopyToClipboard";
+import db from "../db";
 
 const Positions = () => {
     const [positions, setPositions] = useState([]);
 
     useEffect(() => {
-        setPositions(JSON.parse(localStorage.getItem('positions')))
+        db.positions.toArray().then((positions) => {
+            setPositions(positions)
+        })
     }, []);
 
     const renderTableToolbar = () => {
@@ -16,9 +19,7 @@ const Positions = () => {
             <Divider orientation="left" orientationMargin="0">Positions</Divider>
             <Space size="middle" style={{paddingBottom: "2%"}}>
                 <KeywordSearch onSearch={(searchText) => {
-                    let positionsFromLocalStorage = JSON.parse(localStorage.getItem('positions'));
-
-                    const filteredPosition = positionsFromLocalStorage.filter(({title}) => {
+                    const filteredPosition = positions.filter(({title}) => {
                         title = title.toLowerCase();
                         return title.includes(searchText.toLowerCase());
                     });

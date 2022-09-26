@@ -3,21 +3,22 @@ import {BackTop, Button, Card, Divider, notification, Space, Table} from "antd";
 import Uploader from "./Uploader";
 import {KeywordSearch} from "../components/Search";
 import {CopyToClipboard} from "../components/CopyToClipboard";
+import db from "../db";
 
 const Connections = () => {
     const [companies, setCompanies] = useState([]);
 
     useEffect(() => {
-        setCompanies(JSON.parse(localStorage.getItem('companies')))
+        db.companies.toArray().then((companies) => {
+            setCompanies(companies)
+        })
     }, []);
 
     const renderTableToolbar = () => {
         return <div style={{textAlign: "left"}}>
             <Space size="middle" style={{paddingBottom: "2%"}}>
                 <KeywordSearch onSearch={(searchText) => {
-                    let companiesFromLocalStorage = JSON.parse(localStorage.getItem('companies'));
-
-                    const filteredCompanies = companiesFromLocalStorage.filter(({company}) => {
+                    const filteredCompanies = companies.filter(({company}) => {
                         company = company.toLowerCase();
                         return company.includes(searchText.toLowerCase());
                     });
