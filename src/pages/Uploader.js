@@ -91,16 +91,15 @@ const Uploader = () => {
                     name: 'file',
                     multiple: true,
 
-                    onChange(e) {
+                    onDrop(e) {
                         notification.info({
-                            message: 'Please do not close or relaod this window.',
+                            message: 'Please do not close or reload this window.',
                             description: 'Please do not close this window while the file is being processed.',
                         });
 
-                        Array.from(e.fileList).forEach(file => {
+                        Array.from(e.dataTransfer.files).forEach(file => {
                             const reader = new FileReader();
-                            const {originFileObj} = file;
-                            reader.readAsText(originFileObj, "UTF-8");
+                            reader.readAsText(file, "UTF-8");
                             if (file.name === "Connections.csv") {
                                 reader.onload = function (evt) {
                                     let result = evt.target.result;
@@ -116,9 +115,17 @@ const Uploader = () => {
                                                     console.log(connections, companies, positions);
 
                                                     connections && connections.forEach((connection, idx) => {
-                                                        setTimeout(() => {
-                                                            const {firstName, lastName, emailAddress, company, position, connectedOn, fullName} = connection;
-                                                            db.connections.add({
+                                                        setTimeout(async () => {
+                                                            const {
+                                                                firstName,
+                                                                lastName,
+                                                                emailAddress,
+                                                                company,
+                                                                position,
+                                                                connectedOn,
+                                                                fullName
+                                                            } = connection;
+                                                            await db.connections.add({
                                                                 firstName,
                                                                 lastName,
                                                                 emailAddress,
@@ -136,9 +143,9 @@ const Uploader = () => {
                                                     });
 
                                                     companies && companies.forEach((company, idx) => {
-                                                        setTimeout(function() {
+                                                        setTimeout(async function () {
                                                             const {company: companyName, connections} = company
-                                                            db.companies.add({
+                                                            await db.companies.add({
                                                                 company: companyName,
                                                                 connections
                                                             })
@@ -151,9 +158,9 @@ const Uploader = () => {
                                                     });
 
                                                     positions && positions.forEach((position, idx) => {
-                                                        setTimeout(function() {
+                                                        setTimeout(async function () {
                                                             const {title, company, position: positionName} = position
-                                                            db.positions.add({
+                                                            await db.positions.add({
                                                                 title,
                                                                 company,
                                                                 position: positionName
