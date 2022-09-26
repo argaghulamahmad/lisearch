@@ -92,6 +92,11 @@ const Uploader = () => {
                     multiple: true,
 
                     onChange(e) {
+                        notification.info({
+                            message: 'Please do not close or relaod this window.',
+                            description: 'Please do not close this window while the file is being processed.',
+                        });
+
                         Array.from(e.fileList).forEach(file => {
                             const reader = new FileReader();
                             const {originFileObj} = file;
@@ -108,35 +113,58 @@ const Uploader = () => {
                                                     const companies = generateCompaniesDataList(connections);
                                                     const positions = generatePositionsDataList(connections);
 
-                                                    connections && connections.forEach((connection) => {
-                                                        const {firstName, lastName, emailAddress, company, position, connectedOn, fullName} = connection;
-                                                        db.connections.add({
-                                                            firstName,
-                                                            lastName,
-                                                            emailAddress,
-                                                            company,
-                                                            position,
-                                                            connectedOn,
-                                                            fullName
-                                                        })
+                                                    console.log(connections, companies, positions);
+
+                                                    connections && connections.forEach((connection, idx) => {
+                                                        setTimeout(() => {
+                                                            const {firstName, lastName, emailAddress, company, position, connectedOn, fullName} = connection;
+                                                            db.connections.add({
+                                                                firstName,
+                                                                lastName,
+                                                                emailAddress,
+                                                                company,
+                                                                position,
+                                                                connectedOn,
+                                                                fullName
+                                                            })
+                                                        }, 100 * idx);
                                                     })
 
-                                                    companies && companies.forEach((company) => {
-                                                        const {company: companyName, connections} = company
-                                                        db.companies.add({
-                                                            company: companyName,
-                                                            connections
-                                                        })
+                                                    notification.success({
+                                                        message: 'Connections processed!',
+                                                        description: 'Connections processed successfully',
+                                                    });
+
+                                                    companies && companies.forEach((company, idx) => {
+                                                        setTimeout(function() {
+                                                            const {company: companyName, connections} = company
+                                                            db.companies.add({
+                                                                company: companyName,
+                                                                connections
+                                                            })
+                                                        }, 100 * idx);
                                                     })
 
-                                                    positions && positions.forEach((position) => {
-                                                        const {title, position: positionName, company} = position
-                                                        db.positions.add({
-                                                            title,
-                                                            position: positionName,
-                                                            company
-                                                        })
+                                                    notification.success({
+                                                        message: 'Companies processed!',
+                                                        description: 'Companies processed successfully',
+                                                    });
+
+                                                    positions && positions.forEach((position, idx) => {
+                                                        setTimeout(function() {
+                                                            const {title, company, position: positionName} = position
+                                                            db.positions.add({
+                                                                title,
+                                                                company,
+                                                                position: positionName
+                                                            })
+                                                        }, 100 * idx);
                                                     })
+
+                                                    notification.success({
+                                                        message: 'Positions processed!',
+                                                        description: 'Positions processed successfully',
+                                                    });
 
                                                     notification.success({
                                                         message: 'File Connections.csv valid',
