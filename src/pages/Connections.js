@@ -3,6 +3,19 @@ import {BackTop, Button, Card, Divider, notification, Space, Table} from "antd";
 import Uploader from "./Uploader";
 import {KeywordSearch} from "../components/Search";
 import {CopyToClipboard} from "../components/CopyToClipboard";
+import db from "../db";
+//
+// console.log(db)
+// console.log(db.connections)
+db.connections.toArray().then((res) => {
+    console.log(res)
+})
+db.companies.toArray().then((res) => {
+    console.log(res)
+})
+db.positions.toArray().then((res) => {
+    console.log(res)
+})
 
 const Connections = () => {
     const [connections, setConnections] = useState([]);

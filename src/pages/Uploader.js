@@ -1,6 +1,7 @@
 import {InboxOutlined} from '@ant-design/icons';
 import {Button, Divider, notification, Space, Upload} from "antd";
 import {usePapaParse} from 'react-papaparse';
+import db from "../db";
 
 const {Dragger} = Upload;
 
@@ -107,15 +108,35 @@ const Uploader = () => {
                                                     const companies = generateCompaniesDataList(connections);
                                                     const positions = generatePositionsDataList(connections);
 
-                                                    localStorage.setItem('connections', JSON.stringify(
-                                                        connections
-                                                    ));
-                                                    localStorage.setItem('companies', JSON.stringify(
-                                                        companies
-                                                    ));
-                                                    localStorage.setItem('positions', JSON.stringify(
-                                                        positions
-                                                    ));
+                                                    connections && connections.forEach((connection) => {
+                                                        const {firstName, lastName, emailAddress, company, position, connectedOn, fullName} = connection;
+                                                        db.connections.add({
+                                                            firstName,
+                                                            lastName,
+                                                            emailAddress,
+                                                            company,
+                                                            position,
+                                                            connectedOn,
+                                                            fullName
+                                                        })
+                                                    })
+
+                                                    companies && companies.forEach((company) => {
+                                                        const {company: companyName, connections} = company
+                                                        db.companies.add({
+                                                            company: companyName,
+                                                            connections
+                                                        })
+                                                    })
+
+                                                    positions && positions.forEach((position) => {
+                                                        const {title, position: positionName, company} = position
+                                                        db.positions.add({
+                                                            title,
+                                                            position: positionName,
+                                                            company
+                                                        })
+                                                    })
 
                                                     notification.success({
                                                         message: 'File Connections.csv valid',
