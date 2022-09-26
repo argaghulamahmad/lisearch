@@ -23,7 +23,7 @@ export const Stats = () => {
     }, []);
 
     return (
-        connections.length > 0 && companies.length > 0 && positions.length > 0 ?
+        connections && companies && positions ?
             <div style={{width: "1200px"}}>
                 <Row gutter={16}>
                     <Col span={8}>
@@ -33,7 +33,7 @@ export const Stats = () => {
                               }}>
                             <Statistic
                                 title="Connections"
-                                value={JSON.parse(localStorage.getItem('connections')).length}
+                                value={connections.length}
                             />
                         </Card>
                     </Col>
@@ -44,7 +44,7 @@ export const Stats = () => {
                               }}>
                             <Statistic
                                 title="Companies"
-                                value={JSON.parse(localStorage.getItem('companies')).length}
+                                value={companies.length}
                             />
                         </Card>
                     </Col>
@@ -55,7 +55,7 @@ export const Stats = () => {
                               }}>
                             <Statistic
                                 title="Positions"
-                                value={JSON.parse(localStorage.getItem('positions')).length}
+                                value={positions.length}
                             />
                         </Card>
                     </Col>
