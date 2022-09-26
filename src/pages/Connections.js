@@ -4,33 +4,21 @@ import Uploader from "./Uploader";
 import {KeywordSearch} from "../components/Search";
 import {CopyToClipboard} from "../components/CopyToClipboard";
 import db from "../db";
-//
-// console.log(db)
-// console.log(db.connections)
-db.connections.toArray().then((res) => {
-    console.log(res)
-})
-db.companies.toArray().then((res) => {
-    console.log(res)
-})
-db.positions.toArray().then((res) => {
-    console.log(res)
-})
 
 const Connections = () => {
     const [connections, setConnections] = useState([]);
 
     useEffect(() => {
-        setConnections(JSON.parse(localStorage.getItem('connections')))
+        db.connections.toArray().then((res) => {
+            setConnections(res)
+        })
     }, []);
 
     const renderAntdButtonToGetRandomConnection = () => {
         return <div style={{textAlign: "left"}}>
             <Space size="middle" style={{paddingBottom: "2%"}}>
                 <KeywordSearch onSearch={(searchText) => {
-                    let connectionsFromLocalStorage = JSON.parse(localStorage.getItem('connections'));
-
-                    const filteredPosition = connectionsFromLocalStorage.filter(({fullName}) => {
+                    const filteredPosition = connections.filter(({fullName}) => {
                         fullName = fullName.toLowerCase();
                         return fullName.includes(searchText.toLowerCase());
                     });
