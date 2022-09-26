@@ -2,8 +2,11 @@ import {InboxOutlined} from '@ant-design/icons';
 import {Button, Divider, notification, Space, Upload} from "antd";
 import {usePapaParse} from 'react-papaparse';
 import db from "../db";
+import {Dexie} from "dexie";
 
 const {Dragger} = Upload;
+
+const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 
 const Uploader = () => {
         const {readString} = usePapaParse();
@@ -11,7 +14,6 @@ const Uploader = () => {
         const generateCompaniesDataList = connections => {
             const companiesMap = connections.reduce(function (map, connection, idx) {
                 map.set(connection.company, {
-                    id: idx,
                     company: connection.company,
                 });
                 return map;
@@ -30,7 +32,6 @@ const Uploader = () => {
         const generatePositionsDataList = connections => {
             const positionsMap = connections.reduce(function (map, connection, idx) {
                 map.set(connection.position + " at " + connection.company, {
-                    id: idx,
                     title: connection.position + " at " + connection.company,
                     position: connection.position,
                     company: connection.company,
@@ -58,8 +59,6 @@ const Uploader = () => {
                 if (currentValue[0] !== undefined && currentValue[1] !== undefined) {
                     if (currentValue[0] !== "" || currentValue[1] !== "") {
                         const clone = {...connectionStub};
-
-                        clone.id = idx
 
                         clone.firstName = currentValue[0]
                         clone.lastName = currentValue[1]
@@ -107,82 +106,69 @@ const Uploader = () => {
                                         case "Connections.csv":
                                             readString(result, {
                                                 worker: true,
-                                                complete: (csv) => {
+                                                complete: async (csv) => {
                                                     const connections = generateConnectionsDataList(csv);
                                                     const companies = generateCompaniesDataList(connections);
                                                     const positions = generatePositionsDataList(connections);
 
-                                                    console.log(connections, companies, positions);
-
-                                                    connections && connections.forEach((connection, idx) => {
-                                                        setTimeout(async () => {
-                                                            const {
-                                                                firstName,
-                                                                lastName,
-                                                                emailAddress,
-                                                                company,
-                                                                position,
-                                                                connectedOn,
-                                                                fullName
-                                                            } = connection;
-                                                            await db.connections.add({
-                                                                firstName,
-                                                                lastName,
-                                                                emailAddress,
-                                                                company,
-                                                                position,
-                                                                connectedOn,
-                                                                fullName
-                                                            })
-                                                        }, 100 * idx);
-                                                    })
-
                                                     notification.success({
-                                                        message: 'Connections processed!',
-                                                        description: 'Connections processed successfully',
+                                                        message: 'Start processing file',
+                                                        description: 'File Connections.csv valid!',
                                                     });
 
-                                                    companies && companies.forEach((company, idx) => {
-                                                        setTimeout(async function () {
-                                                            const {company: companyName, connections} = company
-                                                            await db.companies.add({
-                                                                company: companyName,
-                                                                connections
-                                                            })
-                                                        }, 100 * idx);
-                                                    })
 
-                                                    notification.success({
-                                                        message: 'Companies processed!',
-                                                        description: 'Companies processed successfully',
+                                                    db.connections.bulkAdd(connections).then(() => {
+                                                        notification.success({
+                                                            message: 'Connections processed successfully!',
+                                                            description: 'Done adding ' + connections.length + ' connections to the database.',
+                                                        });
+                                                    }).catch(Dexie.BulkError, e => {
+                                                        notification.error({
+                                                            message: 'Error processing connections!',
+                                                            description: 'There is an error when store connections to the database.',
+                                                        })
                                                     });
 
-                                                    positions && positions.forEach((position, idx) => {
-                                                        setTimeout(async function () {
-                                                            const {title, company, position: positionName} = position
-                                                            await db.positions.add({
-                                                                title,
-                                                                company,
-                                                                position: positionName
-                                                            })
-                                                        }, 100 * idx);
-                                                    })
+                                                    await sleep(2000);
 
-                                                    notification.success({
-                                                        message: 'Positions processed!',
-                                                        description: 'Positions processed successfully',
+                                                    db.companies.bulkAdd(companies).then(() => {
+                                                        notification.success({
+                                                            message: 'Companies processed successfully!',
+                                                            description: 'Done adding ' + companies.length + ' companies to the database.',
+                                                        });
+                                                    }).catch(Dexie.BulkError, e => {
+                                                        notification.error({
+                                                            message: 'Error processing companies!',
+                                                            description: 'There is an error when store companies to the database.',
+                                                        })
                                                     });
 
+                                                    await sleep(2000);
+
+                                                    db.positions.bulkAdd(positions).then(() => {
+                                                        notification.success({
+                                                            message: 'Positions processed successfully!',
+                                                            description: 'Done adding ' + positions.length + ' positions to the database.',
+                                                        });
+                                                    }).catch(Dexie.BulkError, e => {
+                                                        notification.error({
+                                                            message: 'Error processing positions!',
+                                                            description: 'There is an error when store positions to the database.',
+                                                        })
+                                                    })
+
+                                                    await sleep(2000);
+
                                                     notification.success({
-                                                        message: 'File Connections.csv valid',
-                                                        description: 'Connections record updated!',
+                                                        message: 'File processed successfully!',
+                                                        description: 'Done processing file Connections.csv',
                                                     });
 
                                                     setInterval(() => {
                                                         window.location.href = '../';
-                                                    }, 1000);
+                                                    }, 15000);
                                                     notification.info({
-                                                        message: 'Redirect to home page in 1 seconds',
+                                                        message: 'You will redirected to home page automatically after all process complete.',
                                                     })
                                                 },
                                             });
