@@ -5,7 +5,7 @@ import {KeywordSearch} from "../components/Search";
 import {CopyToClipboard} from "../components/CopyToClipboard";
 import db from "../db";
 
-const Connections = () => {
+const Companies = () => {
     const [companies, setCompanies] = useState([]);
 
     useEffect(() => {
@@ -147,4 +147,4 @@ const Connections = () => {
     );
 }
 
-export default Connections;
+export default Companies;
