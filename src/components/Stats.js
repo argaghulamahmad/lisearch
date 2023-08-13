@@ -21,9 +21,11 @@ const Stats = () => {
             setConnectionsCount(connections.length);
             setCompaniesCount(companies.length);
             setPositionsCount(positions.length);
+
+            console.info("Connections", connections.length);
         }
 
-        fetchCounts();
+        fetchCounts().then(r => console.info(r));
     }, []);
 
     const renderStatisticCard = (title, count, route) => {
