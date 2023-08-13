@@ -1,12 +1,15 @@
 import React from "react";
 import { Input } from "antd";
 
-const Search = Input.Search;
+const { Search } = Input;
 
-export const KeywordSearch = ({onSearch}) => (
+const KeywordSearch = ({ onSearch }) => (
     <Search
-        placeholder="Keyword"
+        placeholder="Search by Keyword"
         onSearch={onSearch}
+        enterButton
         style={{ minWidth: "100%" }}
     />
 );
+
+export default KeywordSearch;

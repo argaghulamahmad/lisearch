@@ -1,67 +1,52 @@
-import React, {useEffect, useState} from "react";
-import {Card, Col, Empty, Row, Statistic} from "antd";
-import {useHistory} from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Card, Col, Row, Statistic } from "antd";
+import { useHistory } from "react-router-dom";
 import db from "../db";
 
-export const Stats = () => {
+const Stats = () => {
     const history = useHistory();
 
-    const [connections, setConnections] = useState([]);
-    const [companies, setCompanies] = useState([]);
-    const [positions, setPositions] = useState([]);
+    const [connectionsCount, setConnectionsCount] = useState(0);
+    const [companiesCount, setCompaniesCount] = useState(0);
+    const [positionsCount, setPositionsCount] = useState(0);
 
     useEffect(() => {
-        db.connections.toArray().then((connections) => {
-            setConnections(connections)
-        })
-        db.companies.toArray().then((companies) => {
-            setCompanies(companies)
-        })
-        db.positions.toArray().then((positions) => {
-            setPositions(positions)
-        })
+        async function fetchCounts() {
+            const [connections, companies, positions] = await Promise.all([
+                db.connections.toArray(),
+                db.companies.toArray(),
+                db.positions.toArray()
+            ]);
+
+            setConnectionsCount(connections.length);
+            setCompaniesCount(companies.length);
+            setPositionsCount(positions.length);
+
+            console.info("Connections", connections.length);
+        }
+
+        fetchCounts().then(r => console.info(r));
     }, []);
 
+    const renderStatisticCard = (title, count, route) => {
+        return (
+            <Col span={8}>
+                <Card hoverable onClick={() => history.push(route)}>
+                    <Statistic title={title} value={count} />
+                </Card>
+            </Col>
+        );
+    };
+
     return (
-        connections && companies && positions ?
-            <div style={{width: "1200px"}}>
-                <Row gutter={16}>
-                    <Col span={8}>
-                        <Card hoverable={true}
-                              onClick={() => {
-                                  history.push('/connections');
-                              }}>
-                            <Statistic
-                                title="Connections"
-                                value={connections.length}
-                            />
-                        </Card>
-                    </Col>
-                    <Col span={8}>
-                        <Card hoverable={true}
-                              onClick={() => {
-                                  history.push('/companies');
-                              }}>
-                            <Statistic
-                                title="Companies"
-                                value={companies.length}
-                            />
-                        </Card>
-                    </Col>
-                    <Col span={8}>
-                        <Card hoverable={true}
-                              onClick={() => {
-                                  history.push('/positions');
-                              }}>
-                            <Statistic
-                                title="Positions"
-                                value={positions.length}
-                            />
-                        </Card>
-                    </Col>
-                </Row>
-            </div> : <div style={{width: "1200px"}}>
-                <Empty/>
-            </div>
+        <div style={{ width: "1200px" }}>
+            <Row gutter={16}>
+                {renderStatisticCard("Connections", connectionsCount, '/connections')}
+                {renderStatisticCard("Companies", companiesCount, '/companies')}
+                {renderStatisticCard("Positions", positionsCount, '/positions')}
+            </Row>
+        </div>
     );
 };
+
+export default Stats;
