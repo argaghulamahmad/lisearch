@@ -12,7 +12,11 @@ const Uploader = () => {
     const generateCompaniesDataList = connections => {
         const companiesMap = new Map();
         for (const connection of connections) {
-            companiesMap.set(connection.company, { company: connection.company });
+            const { company } = connection;
+            if (!companiesMap.has(company)) {
+                companiesMap.set(company, { company, connections: [] });
+            }
+            companiesMap.get(company).connections.push(connection);
         }
         return Array.from(companiesMap.values());
     };
