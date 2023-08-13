@@ -4,7 +4,7 @@ import Uploader from './pages/Uploader';
 import {BrowserRouter as Router, Link, Route, Switch} from "react-router-dom";
 import {Divider, Menu, Space} from "antd";
 import Positions from "./pages/Positions";
-import {Stats} from "./components/Stats";
+import Stats from "./components/Stats";
 import Config from "./pages/Config";
 
 function App() {
