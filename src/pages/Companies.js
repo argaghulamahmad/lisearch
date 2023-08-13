@@ -1,8 +1,8 @@
 import {useEffect, useState} from "react";
 import {BackTop, Button, Card, Divider, notification, Space, Table} from "antd";
 import Uploader from "./Uploader";
-import {KeywordSearch} from "../components/Search";
-import {CopyToClipboard} from "../components/CopyToClipboard";
+import KeywordSearch from "../components/Search";
+import CopyToClipboard from "../components/CopyToClipboard";
 import db from "../db";
 
 const Companies = () => {

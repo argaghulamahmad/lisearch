@@ -1,52 +1,64 @@
-import {useEffect, useState} from "react";
-import {BackTop, Button, Card, Divider, notification, Space, Table} from "antd";
-import Uploader from "./Uploader";
-import {KeywordSearch} from "../components/Search";
-import {CopyToClipboard} from "../components/CopyToClipboard";
+import React, { useEffect, useState } from "react";
+import { BackTop, Button, Card, Divider, notification, Space, Table } from "antd";
+import KeywordSearch from "../components/Search";
+import CopyToClipboard from "../components/CopyToClipboard";
 import db from "../db";
 
 const Connections = () => {
     const [connections, setConnections] = useState([]);
+    const [visitedConnections, setVisitedConnections] = useState([]);
 
     useEffect(() => {
         db.connections.toArray().then((res) => {
-            setConnections(res)
-        })
+            setConnections(res);
+        });
+
+        const storedVisitedConnections = JSON.parse(localStorage.getItem('visitedConnections')) || [];
+        setVisitedConnections(storedVisitedConnections);
     }, []);
 
-    const renderAntdButtonToGetRandomConnection = () => {
-        return <div style={{textAlign: "left"}}>
-            <Space size="middle" style={{paddingBottom: "2%"}}>
-                <KeywordSearch onSearch={(searchText) => {
-                    const filteredPosition = connections.filter(({fullName}) => {
-                        fullName = fullName.toLowerCase();
-                        return fullName.includes(searchText.toLowerCase());
-                    });
+    const handleLuckyButtonClick = () => {
+        const unvisitedConnections = connections.filter(({ id }) => !visitedConnections.includes(id));
+        const numConnections = Math.min(5, unvisitedConnections.length);
 
-                    setConnections(filteredPosition);
-                }}></KeywordSearch>
-                <Button onClick={() => {
-                    let visitedConnections = JSON.parse(localStorage.getItem('visitedConnections')) || [];
-                    const unvisitedConnections = connections.filter(({id}) => !visitedConnections.includes(id))
-                    for (let i = 0; i < 5; i++) {
-                        let {id, fullName} = unvisitedConnections[Math.floor(Math.random() * unvisitedConnections.length)];
-                        visitedConnections.push(id);
-                        notification.success({
-                            message: "Opening connection",
-                            description: `Opening ${fullName} in new tab!`,
-                        });
-                        window.open(`https://www.google.com/search?q=${fullName}`, '_blank');
-                    }
-                    localStorage.setItem('visitedConnections', JSON.stringify(visitedConnections));
-                }}>I feel lucky</Button>
-            </Space>
-        </div>
-    }
+        for (let i = 0; i < numConnections; i++) {
+            const { id, fullName } = unvisitedConnections[i];
+            const newVisitedConnections = [...visitedConnections, id];
+
+            notification.success({
+                message: "Opening connection",
+                description: `Opening ${fullName} in a new tab!`,
+            });
+
+            window.open(`https://www.google.com/search?q=${fullName}`, '_blank');
+            setVisitedConnections(newVisitedConnections);
+            localStorage.setItem('visitedConnections', JSON.stringify(newVisitedConnections));
+        }
+    };
+
+    const handleSearch = (searchText) => {
+        const filteredConnections = connections.filter(({ fullName }) => {
+            return fullName.toLowerCase().includes(searchText.toLowerCase());
+        });
+
+        setConnections(filteredConnections);
+    };
+
+    const renderTableToolbar = () => {
+        return (
+            <div style={{ textAlign: "left" }}>
+                <Divider orientation="left" orientationMargin="0">Connections</Divider>
+                <Space size="middle" style={{ paddingBottom: "2%" }}>
+                    <KeywordSearch onSearch={handleSearch} />
+                    <Button onClick={handleLuckyButtonClick}>I feel lucky</Button>
+                </Space>
+            </div>
+        );
+    };
 
     return (
-        connections ? <div style={{width: "1200px"}}>
-            <Divider orientation="left" orientationMargin="0">Connections</Divider>
-            {renderAntdButtonToGetRandomConnection()}
+        <div style={{ width: "1200px" }}>
+            {renderTableToolbar()}
             <Card>
                 <Table
                     showHeader={true}
@@ -56,57 +68,51 @@ const Connections = () => {
                         showSizeChanger: true,
                         pageSizeOptions: ['10', '50', '100', '200']
                     }}
-                    style={{padding: "0 2% 0 2%"}}
-                    columns={
-                        [
-                            {
-                                title: 'Full Name',
-                                dataIndex: 'fullName',
-                                key: 'idx',
-                                render: text => <div>
-                                    <a href={`https://www.google.com/search?q=${text}`}
-                                       target="_blank" rel="noreferrer">{text}</a>
-                                    <CopyToClipboard value={text}/>
-                                </div>,
-                                sorter: (a, b) => {
-                                    return a.fullName.localeCompare(b.fullName)
-                                },
-                            },
-                            {
-                                title: 'Position',
-                                dataIndex: 'position',
-                                key: 'idx',
-                                render: text => <div>
-                                    <a href={`https://www.google.com/search?q=${text}`}
-                                       target="_blank" rel="noreferrer">{text}</a>
-                                    <CopyToClipboard value={text}/>
-                                </div>,
-                                sorter: (a, b) => {
-                                    return a.position.localeCompare(b.position)
-                                },
-                            },
-                            {
-                                title: 'Company',
-                                dataIndex: 'company',
-                                key: 'idx',
-                                render: text => <div>
-                                    <a href={`https://www.google.com/search?q=${text}`}
-                                       target="_blank" rel="noreferrer">{text}</a>
-                                    <CopyToClipboard value={text}/>
-                                </div>,
-                                sorter: (a, b) => {
-                                    return a.position.localeCompare(b.position)
-                                },
-                            }
-                        ]
-                    }
+                    style={{ padding: "0 2%" }}
+                    columns={[
+                        {
+                            title: 'Full Name',
+                            dataIndex: 'fullName',
+                            key: 'fullName',
+                            render: text => (
+                                <div>
+                                    <a href={`https://www.google.com/search?q=${text}`} target="_blank" rel="noreferrer">{text}</a>
+                                    <CopyToClipboard value={text} />
+                                </div>
+                            ),
+                            sorter: (a, b) => a.fullName.localeCompare(b.fullName)
+                        },
+                        {
+                            title: 'Position',
+                            dataIndex: 'position',
+                            key: 'position',
+                            render: text => (
+                                <div>
+                                    <a href={`https://www.google.com/search?q=${text}`} target="_blank" rel="noreferrer">{text}</a>
+                                    <CopyToClipboard value={text} />
+                                </div>
+                            ),
+                            sorter: (a, b) => a.position.localeCompare(b.position)
+                        },
+                        {
+                            title: 'Company',
+                            dataIndex: 'company',
+                            key: 'company',
+                            render: text => (
+                                <div>
+                                    <a href={`https://www.google.com/search?q=${text}`} target="_blank" rel="noreferrer">{text}</a>
+                                    <CopyToClipboard value={text} />
+                                </div>
+                            ),
+                            sorter: (a, b) => a.company.localeCompare(b.company)
+                        }
+                    ]}
                     dataSource={connections}
                 />
             </Card>
-
-            <BackTop/>
-        </div> : <Uploader/>
+            <BackTop />
+        </div>
     );
-}
+};
 
 export default Connections;
