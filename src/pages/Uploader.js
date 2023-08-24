@@ -1,20 +1,20 @@
-import React, { useState } from "react";
-import { InboxOutlined } from "@ant-design/icons";
-import { Button, Divider, notification, Space, Upload } from "antd";
-import { usePapaParse } from "react-papaparse";
+import React, {useState} from "react";
+import {InboxOutlined} from "@ant-design/icons";
+import {Button, Divider, notification, Space, Upload} from "antd";
+import {usePapaParse} from "react-papaparse";
 import db from "../db";
 
-const { Dragger } = Upload;
+const {Dragger} = Upload;
 const Uploader = () => {
-    const { readString } = usePapaParse();
+    const {readString} = usePapaParse();
     const [processing, setProcessing] = useState(false);
 
     const generateCompaniesDataList = connections => {
         const companiesMap = new Map();
         for (const connection of connections) {
-            const { company } = connection;
+            const {company} = connection;
             if (!companiesMap.has(company)) {
-                companiesMap.set(company, { company, connections: [] });
+                companiesMap.set(company, {company, connections: []});
             }
             companiesMap.get(company).connections.push(connection);
         }
@@ -120,24 +120,21 @@ const Uploader = () => {
                 });
             }
         } catch (error) {
-            notification.error({
-                message: "Error processing file.",
-                description: "An error occurred while processing the file.",
-            });
+
         } finally {
             setProcessing(false);
         }
     };
 
     return (
-        <div style={{ width: "1200px" }}>
+        <div style={{width: "1200px"}}>
             <Divider orientation="left" orientationMargin="0">
                 Uploader
             </Divider>
-            <Space style={{ width: "100%" }} direction="vertical">
+            <Space style={{width: "100%"}} direction="vertical">
                 <Button
                     type="primary"
-                    style={{ width: "100%" }}
+                    style={{width: "100%"}}
                     onClick={() => {
                         window.open("https://www.linkedin.com/mypreferences/d/download-my-data");
                     }}
@@ -151,7 +148,7 @@ const Uploader = () => {
                     disabled={processing}
                 >
                     <p className="ant-upload-drag-icon">
-                        <InboxOutlined />
+                        <InboxOutlined/>
                     </p>
                     <p className="ant-upload-text">Drop Connections CSV file</p>
                 </Dragger>
