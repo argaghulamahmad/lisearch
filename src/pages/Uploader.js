@@ -111,7 +111,7 @@ const Uploader = () => {
     };
 
     return (
-        <div style={{ width: "1200px" }}>
+        <div>
             <Divider orientation="left" orientationMargin="0">Uploader</Divider>
             <Space style={{ width: "100%" }} direction="vertical">
                 <textarea

@@ -38,13 +38,11 @@ const Stats = () => {
     );
 
     return (
-        <div style={{ width: "1200px" }}>
-            <Row gutter={16}>
-                {renderStatisticCard("Connections", counts.connectionsCount)}
-                {renderStatisticCard("Companies", counts.companiesCount)}
-                {renderStatisticCard("Positions", counts.positionsCount)}
-            </Row>
-        </div>
+        <Row gutter={16}>
+            {renderStatisticCard("Connections", counts.connectionsCount)}
+            {renderStatisticCard("Companies", counts.companiesCount)}
+            {renderStatisticCard("Positions", counts.positionsCount)}
+        </Row>
     );
 };
 

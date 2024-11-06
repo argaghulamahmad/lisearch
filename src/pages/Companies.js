@@ -77,7 +77,7 @@ const Companies = () => {
 
     return (
         companies.length > 0 ? (
-            <div style={{ width: "1200px" }}>
+            <div>
                 <Divider orientation="left" orientationMargin="0">Companies</Divider>
                 {renderTableToolbar()}
                 <Card>

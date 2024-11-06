@@ -57,7 +57,7 @@ const Connections = () => {
     };
 
     return (
-        <div style={{ width: "1200px" }}>
+        <div>
             {renderTableToolbar()}
             <Card>
                 <Table

@@ -26,7 +26,7 @@ const Config = () => {
         });
     };
 
-    return (<div style={{width: "1200px"}}>
+    return (<div>
             <div style={{textAlign: "left",}}>
                 Customize your settings here!
             </div>

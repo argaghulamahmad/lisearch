@@ -53,7 +53,7 @@ const Positions = () => {
             </div>);
     };
 
-    return (<div style={{width: "1200px"}}>
+    return (<div>
             {renderTableToolbar()}
             <Card>
                 <Table
