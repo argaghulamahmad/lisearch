@@ -66,7 +66,12 @@ const Uploader = () => {
         try {
             const result = await readString(csvData, {
                 worker: true,
-                complete: async csv => {
+                complete: async (csv) => {
+                    if (!csv.data || !csv.data.length) {
+                        notification.error({ message: "CSV data is empty or invalid." });
+                        return;
+                    }
+
                     const connections = generateConnectionsDataList(csv);
                     const companies = generateCompaniesDataList(connections);
                     const positions = generatePositionsDataList(connections);
@@ -93,14 +98,12 @@ const Uploader = () => {
                     }, 2000);
                 },
             });
-
-            if (!result.data || !result.data.length) {
-                notification.error({ message: "CSV data is empty or invalid." });
-            }
         } catch (error) {
+            console.error(error);
+
             notification.error({
                 message: "File processing failed.",
-                description: error.message,
+                description: `Error: ${error.message}`,
             });
         } finally {
             setProcessing(false);
@@ -117,6 +120,7 @@ const Uploader = () => {
                     value={csvData}
                     onChange={e => setCsvData(e.target.value)}
                     placeholder="Paste your CSV data here..."
+                    disabled={processing}
                 />
                 <Button
                     type="primary"
