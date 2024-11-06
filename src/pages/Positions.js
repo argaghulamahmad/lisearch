@@ -1,5 +1,5 @@
-import React, {useEffect, useState} from "react";
-import {BackTop, Button, Card, Divider, notification, Space, Table} from "antd";
+import React, { useEffect, useState } from "react";
+import { BackTop, Button, Card, Divider, notification, Space, Table } from "antd";
 import KeywordSearch from "../components/Search";
 import CopyToClipboard from "../components/CopyToClipboard";
 import db from "../db";
@@ -18,11 +18,11 @@ const Positions = () => {
     }, []);
 
     const handleLuckyButtonClick = () => {
-        const unvisitedPositions = positions.filter(({id}) => !visitedPositions.includes(id));
+        const unvisitedPositions = positions.filter(({ id }) => !visitedPositions.includes(id));
         const numOpenings = Math.min(5, unvisitedPositions.length);
 
         for (let i = 0; i < numOpenings; i++) {
-            const {id, position, company} = unvisitedPositions[i];
+            const { id, position, company } = unvisitedPositions[i];
             const newPosition = [...visitedPositions, id];
 
             notification.success({
@@ -36,45 +36,31 @@ const Positions = () => {
     };
 
     const handleSearch = (searchText) => {
-        const filteredPosition = positions.filter(({title}) => {
+        const filteredPosition = positions.filter(({ title }) => {
             return title.toLowerCase().includes(searchText.toLowerCase());
         });
 
         setPositions(filteredPosition);
     };
 
-    const renderTableToolbar = () => {
-        return (<div style={{textAlign: "left"}}>
-                <Divider orientation="left" orientationMargin="0">Positions</Divider>
-                <Space size="middle" style={{paddingBottom: "2%"}}>
-                    <KeywordSearch onSearch={handleSearch}/>
-                    <Button onClick={handleLuckyButtonClick}>I feel lucky</Button>
-                </Space>
-            </div>);
-    };
-
     return (<div>
-            {renderTableToolbar()}
-            <Card>
-                <Table
-                    showHeader={true}
-                    rowKey="id"
-                    pagination={{
-                        defaultPageSize: 10, showSizeChanger: true, pageSizeOptions: ['10', '50', '100', '200']
-                    }}
-                    style={{padding: "0 2%"}}
-                    columns={[{
-                        title: 'Position', dataIndex: 'title', key: 'id', render: text => (<div>
-                                <a href={`https://www.google.com/search?q=${text}`} target="_blank"
-                                   rel="noreferrer">{text}</a>
-                                <CopyToClipboard value={text}/>
-                            </div>), sorter: (a, b) => a.title.localeCompare(b.title)
-                    }]}
-                    dataSource={positions}
-                />
-            </Card>
-            <BackTop/>
-        </div>);
+        <Table
+            showHeader={true}
+            rowKey="id"
+            pagination={{
+                defaultPageSize: 100, showSizeChanger: true, pageSizeOptions: ['10', '50', '100', '250', '1000']
+            }}
+            columns={[{
+                title: 'Position', dataIndex: 'title', key: 'id', render: text => (<div>
+                    <a href={`https://www.google.com/search?q=${text}`} target="_blank"
+                        rel="noreferrer">{text}</a>
+                    <CopyToClipboard value={text} />
+                </div>), sorter: (a, b) => a.title.localeCompare(b.title)
+            }]}
+            dataSource={positions}
+        />
+        <BackTop />
+    </div>);
 };
 
 export default Positions;

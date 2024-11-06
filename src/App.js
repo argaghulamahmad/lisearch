@@ -20,9 +20,8 @@ function App() {
             <Content>
                 <Space direction="vertical" style={{width: "100%", padding: "20px", height: "100%"}}>
                     <Stats/>
-                    <Divider orientation="left" plain/>
                     <Tabs defaultActiveKey="1" style={{width: "100%"}}>
-                        <TabPane tab="Home" key="1">
+                        <TabPane tab="Connections" key="1">
                             <Connections/>
                         </TabPane>
                         <TabPane tab="Companies" key="2">

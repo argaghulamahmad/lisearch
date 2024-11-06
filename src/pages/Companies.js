@@ -35,17 +35,6 @@ const Companies = () => {
         localStorage.setItem(visitedKey, JSON.stringify(visitedItems));
     };
 
-    const renderTableToolbar = () => (
-        <div style={{ textAlign: "left" }}>
-            <Space size="middle" style={{ paddingBottom: "2%" }}>
-                <KeywordSearch onSearch={handleSearch} />
-                <Button onClick={() => handleLuckyClick('company', companies, 'visitedCompanies')}>
-                    I feel lucky
-                </Button>
-            </Space>
-        </div>
-    );
-
     const renderConnectionsTable = (record) => (
         <Table
             columns={[
@@ -78,18 +67,14 @@ const Companies = () => {
     return (
         companies.length > 0 ? (
             <div>
-                <Divider orientation="left" orientationMargin="0">Companies</Divider>
-                {renderTableToolbar()}
-                <Card>
                     <Table
                         showHeader={true}
                         rowKey="id"
                         pagination={{
-                            defaultPageSize: 10,
+                            defaultPageSize: 100,
                             showSizeChanger: true,
-                            pageSizeOptions: ['10', '50', '100', '200']
+                            pageSizeOptions: ['10', '50', '100', '250', '1000']
                         }}
-                        style={{ padding: "0 2% 0 2%" }}
                         columns={[
                             {
                                 title: 'Company',
@@ -124,7 +109,6 @@ const Companies = () => {
                         }}
                         dataSource={companies}
                     />
-                </Card>
                 <BackTop />
             </div>
         ) : <Uploader />
