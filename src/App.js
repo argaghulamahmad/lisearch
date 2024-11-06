@@ -1,7 +1,6 @@
 import React from "react";
-import { BrowserRouter as Router, Link, Route, Switch } from "react-router-dom";
-import { Divider, Menu, Space } from "antd";
-import { useMediaQuery } from "react-responsive";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import { Divider, Space, Tabs } from "antd";
 import Connections from "./pages/Connections";
 import Companies from "./pages/Companies";
 import Uploader from "./pages/Uploader";
@@ -9,58 +8,37 @@ import Positions from "./pages/Positions";
 import Stats from "./components/Stats";
 import Config from "./pages/Config";
 
+const { TabPane } = Tabs;
+
 function App() {
-    const isMobile = useMediaQuery({ query: "(max-width: 768px)" });
-
     return (
-        <div className="App" style={{ textAlign: "center" }}>
+        <div className="App" style={{ textAlign: "center", width: "100%", padding: "0 20px" }}>
             <Router>
-                <div className="App">
-                    <div className="AppContent">
-                        <h1 style={{ padding: "1% 3% 0 3%" }}>Li Search</h1>
-                        <Divider orientation="left" plain style={{ marginBottom: 0 }}></Divider>
-                        <Space size="middle" align="vertical">
-                            {isMobile ? (
-                                <p>This app cannot be viewed on mobile devices.</p>
-                            ) : (
-                                <Menu mode="vertical">
-                                    <Menu.Item key="home">
-                                        <Link to="/connections">Home</Link>
-                                    </Menu.Item>
-                                    <Menu.Item key="uploadFile">
-                                        <Link to="/upload">Upload</Link>
-                                    </Menu.Item>
-                                    <Menu.Item key="config">
-                                        <Link to="/config">Config</Link>
-                                    </Menu.Item>
-                                </Menu>
-                            )}
-
-                            <Switch>
-                                <Route exact path="/">
-                                    <Stats />
-                                </Route>
-                                <Route exact path="/connections">
-                                    <Stats />
-                                    <Connections />
-                                </Route>
-                                <Route path="/positions">
-                                    <Stats />
-                                    <Positions />
-                                </Route>
-                                <Route exact path="/companies">
-                                    <Stats />
-                                    <Companies />
-                                </Route>
-                                <Route exact path="/upload">
-                                    <Uploader />
-                                </Route>
-                                <Route exact path="/config">
-                                    <Config />
-                                </Route>
-                            </Switch>
-                        </Space>
-                    </div>
+                <div className="AppContent" style={{ width: "100%" }}>
+                    <h1 style={{ padding: "1% 0" }}>Li Search</h1>
+                    <Divider orientation="left" plain style={{ marginBottom: 0 }} />
+                    <Space size="middle" align="vertical" style={{ width: "100%" }}>
+                        <Tabs defaultActiveKey="1" style={{ width: "100%" }}>
+                            <TabPane tab="Home" key="1">
+                                <Stats />
+                                <Connections />
+                            </TabPane>
+                            <TabPane tab="Companies" key="2">
+                                <Stats />
+                                <Companies />
+                            </TabPane>
+                            <TabPane tab="Positions" key="3">
+                                <Stats />
+                                <Positions />
+                            </TabPane>
+                            <TabPane tab="Upload" key="4">
+                                <Uploader />
+                            </TabPane>
+                            <TabPane tab="Config" key="5">
+                                <Config />
+                            </TabPane>
+                        </Tabs>
+                    </Space>
                 </div>
             </Router>
         </div>
