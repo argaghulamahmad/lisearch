@@ -1,12 +1,11 @@
 import React, {useState} from "react";
-import {InboxOutlined} from "@ant-design/icons";
-import {Button, Divider, notification, Space, Upload} from "antd";
+import {Button, Divider, notification, Space} from "antd";
 import {usePapaParse} from "react-papaparse";
 import db from "../db";
 
-const {Dragger} = Upload;
 const Uploader = () => {
     const {readString} = usePapaParse();
+    const [csvData, setCsvData] = useState("");
     const [processing, setProcessing] = useState(false);
 
     const generateCompaniesDataList = connections => {
@@ -68,27 +67,18 @@ const Uploader = () => {
         }, []);
     };
 
-    const handleFileDrop = async e => {
-        if (processing) return;
-
-        setProcessing(true);
-
-        notification.info({
-            message: "Please do not close or reload this window.",
-            description: "Please do not close this window while the file is being processed.",
-        });
-
-        const file = e.dataTransfer.files[0];
-        if (!file || file.name !== "Connections.csv") {
+    const handleProcessCsv = async () => {
+        if (!csvData) {
             notification.error({
-                message: "Please drop a valid Connections CSV file.",
+                message: "No CSV data provided.",
             });
-            setProcessing(false);
             return;
         }
 
+        setProcessing(true);
+
         try {
-            const result = await readString(file, {
+            const result = await readString(csvData, {
                 worker: true,
                 complete: async csv => {
                     const connections = generateConnectionsDataList(csv);
@@ -116,11 +106,14 @@ const Uploader = () => {
 
             if (!result.data || !result.data.length) {
                 notification.error({
-                    message: "CSV file is empty or invalid.",
+                    message: "CSV data is empty or invalid.",
                 });
             }
         } catch (error) {
-
+            notification.error({
+                message: "File processing failed.",
+                description: error.message,
+            });
         } finally {
             setProcessing(false);
         }
@@ -132,26 +125,20 @@ const Uploader = () => {
                 Uploader
             </Divider>
             <Space style={{width: "100%"}} direction="vertical">
+                <textarea
+                    rows={10}
+                    style={{width: "100%"}}
+                    value={csvData}
+                    onChange={e => setCsvData(e.target.value)}
+                    placeholder="Paste your CSV data here..."
+                />
                 <Button
                     type="primary"
-                    style={{width: "100%"}}
-                    onClick={() => {
-                        window.open("https://www.linkedin.com/mypreferences/d/download-my-data");
-                    }}
-                >
-                    Request and Download Connections CSV File
-                </Button>
-                <Dragger
-                    name="file"
-                    multiple={false}
-                    onDrop={handleFileDrop}
+                    onClick={handleProcessCsv}
                     disabled={processing}
                 >
-                    <p className="ant-upload-drag-icon">
-                        <InboxOutlined/>
-                    </p>
-                    <p className="ant-upload-text">Drop Connections CSV file</p>
-                </Dragger>
+                    Process CSV Data
+                </Button>
             </Space>
         </div>
     );
