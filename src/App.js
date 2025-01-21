@@ -1,7 +1,7 @@
-import React, { Suspense, useState } from "react";
+import React, { Suspense } from "react";
 import { Layout, Space, Tabs, Typography, Spin } from "antd";
-import Stats from "./components/Stats";
 import ErrorBoundary from "./components/ErrorBoundary";
+import Stats from "./components/Stats";
 
 // Lazy loaded components
 const Connections = React.lazy(() => import("./pages/Connections"));
@@ -36,24 +36,17 @@ const styles = {
         width: "100%"
     },
     loadingContainer: {
-        textAlign: 'center',
-        padding: '20px'
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        minHeight: '200px'
     }
 };
-
-// Tab configuration
-const TAB_CONFIG = [
-    { key: "1", title: "Connections", component: Connections },
-    { key: "2", title: "Companies", component: Companies },
-    { key: "3", title: "Positions", component: Positions },
-    { key: "4", title: "Upload", component: Uploader },
-    { key: "5", title: "Config", component: Config }
-];
 
 // Loading fallback component
 const LoadingFallback = () => (
     <div style={styles.loadingContainer}>
-        <Spin size="large" />
+        <Spin size="large" tip="Loading..." />
     </div>
 );
 
@@ -64,34 +57,78 @@ const AppHeader = () => (
     </Header>
 );
 
-function App() {
-    const [activeKey, setActiveKey] = useState("1");
+// Tab configuration with error boundaries
+const TAB_CONFIG = [
+    {
+        key: "1",
+        title: "Connections",
+        component: (props) => (
+            <ErrorBoundary>
+                <Connections {...props} />
+            </ErrorBoundary>
+        )
+    },
+    {
+        key: "2",
+        title: "Companies",
+        component: (props) => (
+            <ErrorBoundary>
+                <Companies {...props} />
+            </ErrorBoundary>
+        )
+    },
+    {
+        key: "3",
+        title: "Positions",
+        component: (props) => (
+            <ErrorBoundary>
+                <Positions {...props} />
+            </ErrorBoundary>
+        )
+    },
+    {
+        key: "4",
+        title: "Upload",
+        component: (props) => (
+            <ErrorBoundary>
+                <Uploader {...props} />
+            </ErrorBoundary>
+        )
+    },
+    {
+        key: "5",
+        title: "Config",
+        component: (props) => (
+            <ErrorBoundary>
+                <Config {...props} />
+            </ErrorBoundary>
+        )
+    }
+];
 
+function App() {
     return (
-        <Layout style={styles.layout}>
-            <AppHeader />
-            <Content>
-                <Space direction="vertical" style={styles.content}>
-                    <Stats />
-                    <Tabs
-                        activeKey={activeKey}
-                        onChange={setActiveKey}
-                        style={styles.tabs}
-                        destroyInactiveTabPane
-                    >
-                        {TAB_CONFIG.map(({ key, title, component: Component }) => (
-                            <TabPane tab={title} key={key}>
-                                <ErrorBoundary>
+        <ErrorBoundary>
+            <Layout style={styles.layout}>
+                <AppHeader />
+                <Content>
+                    <Space direction="vertical" style={styles.content}>
+                        <ErrorBoundary>
+                            <Stats />
+                        </ErrorBoundary>
+                        <Tabs defaultActiveKey="1" style={styles.tabs} destroyInactiveTabPane>
+                            {TAB_CONFIG.map(({ key, title, component: Component }) => (
+                                <TabPane tab={title} key={key}>
                                     <Suspense fallback={<LoadingFallback />}>
                                         <Component />
                                     </Suspense>
-                                </ErrorBoundary>
-                            </TabPane>
-                        ))}
-                    </Tabs>
-                </Space>
-            </Content>
-        </Layout>
+                                </TabPane>
+                            ))}
+                        </Tabs>
+                    </Space>
+                </Content>
+            </Layout>
+        </ErrorBoundary>
     );
 }
 
