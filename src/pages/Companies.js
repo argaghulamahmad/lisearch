@@ -1,17 +1,25 @@
-import { useEffect, useState, useMemo } from "react";
-import { BackTop, Button, notification, Space, Table, Alert, Spin } from "antd";
+import { useEffect, useState, useMemo, useCallback } from "react";
+import { BackTop, Button, notification, Space, Table, Alert, Spin, Typography } from "antd";
 import Uploader from "./Uploader";
 import KeywordSearch from "../components/Search";
 import CopyToClipboard from "../components/CopyToClipboard";
 import db from "../db";
 import { useDebounce } from "../hooks/useDataFetching";
+import { logger } from "../services/logger";
 
-const renderWithCopy = (text) => (
+const { Text } = Typography;
+
+// Constants
+const PAGE_SIZE = 100;
+const DEBOUNCE_DELAY = 300;
+
+// Memoized components
+const renderWithCopy = useMemo(() => (text) => (
     <div>
         <a href={`https://www.google.com/search?q=${text}`} target="_blank" rel="noreferrer">{text}</a>
         <CopyToClipboard value={text} />
     </div>
-);
+), []);
 
 const connectionColumns = [
     {
@@ -44,68 +52,103 @@ const companyColumns = [
         render: connections => <div>{connections.length}</div>,
         sorter: (a, b) => a.connections.length - b.connections.length,
         width: 200,
+    },
+    {
+        title: 'Last Updated',
+        dataIndex: 'updatedAt',
+        render: timestamp => new Date(timestamp).toLocaleDateString(),
+        width: 150,
     }
 ];
 
-const PAGE_SIZE = 100;
-
 const Companies = () => {
-    const [allCompanies, setAllCompanies] = useState([]);
-    const [filteredCompanies, setFilteredCompanies] = useState([]);
+    // State
+    const [companiesData, setCompaniesData] = useState({ items: [], total: 0, page: 1 });
     const [searchText, setSearchText] = useState("");
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [currentPage, setCurrentPage] = useState(1);
-    const debouncedSearch = useDebounce(searchText);
+    const [sortField, setSortField] = useState('company');
+    const [sortOrder, setSortOrder] = useState('ascend');
+    const [performanceStats, setPerformanceStats] = useState({});
 
-    useEffect(() => {
-        const fetchCompanies = async () => {
-            try {
-                setLoading(true);
-                setError(null);
-                const companies = await db.companies.toArray();
-                setAllCompanies(companies);
-                setFilteredCompanies(companies);
-            } catch (err) {
-                setError(err.message);
-                notification.error({
-                    message: 'Error loading companies',
-                    description: err.message,
-                });
-            } finally {
-                setLoading(false);
-            }
-        };
+    // Hooks
+    const debouncedSearch = useDebounce(searchText, DEBOUNCE_DELAY);
 
-        fetchCompanies();
-    }, []);
+    // Fetch companies with performance tracking
+    const fetchCompanies = useCallback(async (page, searchTerm, options = {}) => {
+        const fetchId = Date.now();
+        logger.startTimer(`fetch_${fetchId}`);
 
-    useEffect(() => {
         try {
-            if (debouncedSearch) {
-                const searchLower = debouncedSearch.toLowerCase();
-                const filtered = allCompanies.filter(({ company }) =>
-                    company.toLowerCase().includes(searchLower)
-                );
-                setFilteredCompanies(filtered);
-                setCurrentPage(1); // Reset to first page on new search
-            } else {
-                setFilteredCompanies(allCompanies);
-            }
-        } catch (err) {
-            notification.error({
-                message: 'Error filtering companies',
-                description: err.message,
+            setLoading(true);
+            setError(null);
+
+            const result = await db.getCompaniesPaginated(page, PAGE_SIZE, searchTerm, {
+                ...options,
+                sortBy: sortField,
+                sortOrder
             });
-        }
-    }, [debouncedSearch, allCompanies]);
 
-    const handleLuckyClick = (type, items, visitedKey) => {
+            setCompaniesData(result);
+
+            // Update performance stats
+            const duration = logger.endTimer(`fetch_${fetchId}`);
+            setPerformanceStats(prev => ({
+                ...prev,
+                lastFetchDuration: duration,
+                averageFetchDuration: prev.averageFetchDuration
+                    ? (prev.averageFetchDuration + duration) / 2
+                    : duration
+            }));
+
+            logger.info('Companies fetched', {
+                page,
+                searchTerm,
+                count: result.items.length,
+                total: result.total,
+                duration
+            });
+        } catch (err) {
+            const errorMessage = err.message;
+            setError(errorMessage);
+            logger.error('Error fetching companies', {
+                error: errorMessage,
+                page,
+                searchTerm
+            });
+            notification.error({
+                message: 'Error loading companies',
+                description: errorMessage,
+            });
+        } finally {
+            setLoading(false);
+        }
+    }, [sortField, sortOrder]);
+
+    // Effects
+    useEffect(() => {
+        fetchCompanies(1, debouncedSearch);
+    }, [debouncedSearch, fetchCompanies]);
+
+    // Event handlers
+    const handleTableChange = useCallback((pagination, filters, sorter) => {
+        if (sorter.field) {
+            setSortField(sorter.field);
+            setSortOrder(sorter.order);
+        }
+
+        logger.trackEvent('navigation', 'changePage', 'companiesTable', pagination.current);
+        fetchCompanies(pagination.current, debouncedSearch);
+    }, [debouncedSearch, fetchCompanies]);
+
+    const handleLuckyClick = useCallback((type, items, visitedKey) => {
         try {
+            logger.startTimer('luckyClick');
             const visitedSet = new Set(JSON.parse(localStorage.getItem(visitedKey)) || []);
             const unvisitedItems = items.filter(({ id }) => !visitedSet.has(id));
 
             if (unvisitedItems.length === 0) {
+                logger.info('No more unvisited items', { type });
                 notification.info({
                     message: 'No more items',
                     description: 'You have visited all items in this list!',
@@ -113,35 +156,54 @@ const Companies = () => {
                 return;
             }
 
+            const selectedItems = new Set();
             for (let i = 0; i < Math.min(5, unvisitedItems.length); i++) {
-                const randomIndex = Math.floor(Math.random() * unvisitedItems.length);
-                const { id, company } = unvisitedItems[randomIndex];
-                visitedSet.add(id);
+                let item;
+                do {
+                    const randomIndex = Math.floor(Math.random() * unvisitedItems.length);
+                    item = unvisitedItems[randomIndex];
+                } while (selectedItems.has(item.id));
+
+                selectedItems.add(item.id);
+                visitedSet.add(item.id);
+
+                logger.trackEvent('interaction', 'luckyClick', item.company);
                 notification.success({
                     message: `Opening ${type}`,
-                    description: `Opening ${company} in new tab!`,
+                    description: `Opening ${item.company} in new tab!`,
                 });
-                window.open(`https://www.google.com/search?q=${company}`, '_blank');
-                unvisitedItems.splice(randomIndex, 1);
+                window.open(`https://www.google.com/search?q=${item.company}`, '_blank');
             }
+
             localStorage.setItem(visitedKey, JSON.stringify([...visitedSet]));
         } catch (err) {
+            logger.error('Error in lucky click', { error: err.message });
             notification.error({
                 message: 'Error processing lucky click',
                 description: err.message,
             });
+        } finally {
+            logger.endTimer('luckyClick');
         }
-    };
+    }, []);
 
     const renderConnectionsTable = useMemo(() => (record) => (
         <div>
-            <Space align="baseline" direction="vertical" style={{ margin: "20px" }}>
+            <Space align="baseline" direction="vertical" style={{ margin: "20px", width: "100%" }}>
                 <Button
+                    type="primary"
                     style={{ width: "100%" }}
                     onClick={() => handleLuckyClick('connection', record.connections, 'visitedConnections')}
                 >
                     I feel lucky
                 </Button>
+                {performanceStats.lastFetchDuration && (
+                    <Text type="secondary">
+                        Last fetch: {performanceStats.lastFetchDuration.toFixed(2)}ms
+                        {performanceStats.averageFetchDuration &&
+                            ` (avg: ${performanceStats.averageFetchDuration.toFixed(2)}ms)`}
+                    </Text>
+                )}
             </Space>
             <Table
                 columns={connectionColumns}
@@ -154,9 +216,10 @@ const Companies = () => {
                 rowKey="id"
             />
         </div>
-    ), []);
+    ), [handleLuckyClick, performanceStats]);
 
-    if (loading) {
+    // Render loading state
+    if (loading && !companiesData.items.length) {
         return (
             <div style={{ textAlign: 'center', padding: '50px' }}>
                 <Spin size="large" tip="Loading companies..." />
@@ -164,7 +227,8 @@ const Companies = () => {
         );
     }
 
-    if (error) {
+    // Render error state
+    if (error && !companiesData.items.length) {
         return (
             <Alert
                 message="Error loading companies"
@@ -176,16 +240,27 @@ const Companies = () => {
         );
     }
 
-    if (!allCompanies.length) return <Uploader />;
+    // Render empty state
+    if (!companiesData.total) return <Uploader />;
 
+    // Main render
     return (
         <div>
-            <KeywordSearch
-                onSearch={setSearchText}
-                placeholder="Search companies..."
-                style={{ marginBottom: 16 }}
-            />
-            {filteredCompanies.length === 0 && searchText && (
+            <Space direction="vertical" style={{ width: '100%', marginBottom: 16 }}>
+                <KeywordSearch
+                    onSearch={setSearchText}
+                    placeholder="Search companies..."
+                />
+                {performanceStats.lastFetchDuration && (
+                    <Text type="secondary">
+                        Query time: {performanceStats.lastFetchDuration.toFixed(2)}ms
+                        {performanceStats.averageFetchDuration &&
+                            ` (avg: ${performanceStats.averageFetchDuration.toFixed(2)}ms)`}
+                    </Text>
+                )}
+            </Space>
+
+            {companiesData.items.length === 0 && searchText && (
                 <Alert
                     message="No results found"
                     description="Try adjusting your search terms"
@@ -194,23 +269,26 @@ const Companies = () => {
                     style={{ marginBottom: 16 }}
                 />
             )}
+
             <Table
                 showHeader={true}
                 rowKey="id"
+                loading={loading}
                 pagination={{
-                    current: currentPage,
-                    onChange: setCurrentPage,
+                    current: companiesData.page,
                     pageSize: PAGE_SIZE,
+                    total: companiesData.total,
                     showSizeChanger: true,
                     pageSizeOptions: ['50', '100', '250', '500'],
                     showTotal: (total, range) => `${range[0]}-${range[1]} of ${total} items`,
                 }}
+                onChange={handleTableChange}
                 columns={companyColumns}
                 expandable={{
                     expandedRowRender: renderConnectionsTable,
                     rowExpandable: record => record.connections.length !== 0 && record.company !== undefined,
                 }}
-                dataSource={filteredCompanies}
+                dataSource={companiesData.items}
                 scroll={{ x: 800, y: 'calc(100vh - 300px)' }}
                 sticky
             />
