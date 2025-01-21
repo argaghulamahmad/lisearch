@@ -53,6 +53,31 @@ importers:
       web-vitals:
         specifier: ^2.1.4
         version: 2.1.4
+    devDependencies:
+      '@babel/core':
+        specifier: ^7.22.10
+        version: 7.26.0
+      '@babel/preset-react':
+        specifier: ^7.22.5
+        version: 7.26.3(@babel/core@7.26.0)
+      '@pmmmwh/react-refresh-webpack-plugin':
+        specifier: ^0.5.10
+        version: 0.5.15(react-refresh@0.11.0)(type-fest@0.21.3)(webpack-dev-server@4.15.2(webpack@5.97.1))(webpack@5.97.1)
+      babel-loader:
+        specifier: ^8.3.0
+        version: 8.4.1(@babel/core@7.26.0)(webpack@5.97.1)
+      html-webpack-plugin:
+        specifier: ^5.5.3
+        version: 5.6.3(webpack@5.97.1)
+      react-refresh:
+        specifier: ^0.11.0
+        version: 0.11.0
+      webpack:
+        specifier: ^5.88.2
+        version: 5.97.1
+      webpack-dev-server:
+        specifier: ^4.15.1
+        version: 4.15.2(webpack@5.97.1)
 
 packages:
 
