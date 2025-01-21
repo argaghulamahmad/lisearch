@@ -1,17 +1,44 @@
 import React from 'react';
-import ReactDOM from 'react-dom/client';
-import 'antd/dist/antd.css';
+import { createRoot } from 'react-dom/client';
+import { ConfigProvider } from 'antd';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
+// Import styles asynchronously
+import('antd/dist/antd.css');
+
+// Create root with concurrent features
+const root = createRoot(document.getElementById('root'));
+
+// Render with performance optimization settings
 root.render(
   <React.StrictMode>
-    <App />
+    <ConfigProvider
+      theme={{
+        token: {
+          colorPrimary: '#1890ff',
+        },
+      }}
+      virtual={true}
+      input={{ autoComplete: 'off' }}
+    >
+      <App />
+    </ConfigProvider>
   </React.StrictMode>
 );
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+// Monitor performance metrics
+reportWebVitals(metric => {
+  // Send to analytics
+  console.log(metric);
+
+  // You can send to your analytics service here
+  if (metric.name === 'FCP') {
+    // First Contentful Paint
+    console.log('FCP:', metric.value);
+  }
+  if (metric.name === 'LCP') {
+    // Largest Contentful Paint
+    console.log('LCP:', metric.value);
+  }
+});
