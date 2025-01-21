@@ -1,5 +1,6 @@
 import { useEffect, useState, useMemo, useCallback } from "react";
-import { BackTop, Button, notification, Space, Table, Alert, Spin, Typography } from "antd";
+import { BackTop, Button, notification, Space, Table, Alert, Spin, Typography, Card, Statistic, Row, Col } from "antd";
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import Uploader from "./Uploader";
 import KeywordSearch from "../components/Search";
 import CopyToClipboard from "../components/CopyToClipboard";
@@ -12,6 +13,53 @@ const { Text } = Typography;
 // Constants
 const PAGE_SIZE = 100;
 const DEBOUNCE_DELAY = 300;
+const MAX_PERFORMANCE_HISTORY = 20;
+
+// Performance tracking component
+const PerformanceStats = ({ stats, history }) => (
+    <Card title="Performance Metrics" size="small" style={{ marginBottom: 16 }}>
+        <Row gutter={16}>
+            <Col span={6}>
+                <Statistic
+                    title="Last Query Time"
+                    value={stats.lastFetchDuration?.toFixed(2) || 0}
+                    suffix="ms"
+                />
+            </Col>
+            <Col span={6}>
+                <Statistic
+                    title="Average Query Time"
+                    value={stats.averageFetchDuration?.toFixed(2) || 0}
+                    suffix="ms"
+                />
+            </Col>
+            <Col span={6}>
+                <Statistic
+                    title="Cache Hit Rate"
+                    value={stats.cacheHitRate?.toFixed(1) || 0}
+                    suffix="%"
+                />
+            </Col>
+            <Col span={6}>
+                <Statistic
+                    title="Total Queries"
+                    value={stats.totalQueries || 0}
+                />
+            </Col>
+        </Row>
+        <div style={{ height: 200, marginTop: 16 }}>
+            <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={history}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="timestamp" />
+                    <YAxis />
+                    <Tooltip />
+                    <Line type="monotone" dataKey="duration" stroke="#8884d8" />
+                </LineChart>
+            </ResponsiveContainer>
+        </div>
+    </Card>
+);
 
 // Memoized components
 const renderWithCopy = useMemo(() => (text) => (
@@ -69,10 +117,29 @@ const Companies = () => {
     const [error, setError] = useState(null);
     const [sortField, setSortField] = useState('company');
     const [sortOrder, setSortOrder] = useState('ascend');
-    const [performanceStats, setPerformanceStats] = useState({});
+    const [performanceStats, setPerformanceStats] = useState({
+        lastFetchDuration: 0,
+        averageFetchDuration: 0,
+        cacheHitRate: 0,
+        totalQueries: 0,
+    });
+    const [performanceHistory, setPerformanceHistory] = useState([]);
+    const [dbStats, setDbStats] = useState(null);
 
     // Hooks
     const debouncedSearch = useDebounce(searchText, DEBOUNCE_DELAY);
+
+    // Update database stats periodically
+    useEffect(() => {
+        const updateStats = async () => {
+            const stats = await db.getStats();
+            setDbStats(stats);
+        };
+
+        updateStats();
+        const interval = setInterval(updateStats, 30000); // Update every 30 seconds
+        return () => clearInterval(interval);
+    }, []);
 
     // Fetch companies with performance tracking
     const fetchCompanies = useCallback(async (page, searchTerm, options = {}) => {
@@ -93,20 +160,34 @@ const Companies = () => {
 
             // Update performance stats
             const duration = logger.endTimer(`fetch_${fetchId}`);
-            setPerformanceStats(prev => ({
-                ...prev,
-                lastFetchDuration: duration,
-                averageFetchDuration: prev.averageFetchDuration
-                    ? (prev.averageFetchDuration + duration) / 2
-                    : duration
-            }));
+            const timestamp = new Date().toLocaleTimeString();
+
+            setPerformanceStats(prev => {
+                const newStats = {
+                    lastFetchDuration: duration,
+                    averageFetchDuration: prev.averageFetchDuration
+                        ? (prev.averageFetchDuration * prev.totalQueries + duration) / (prev.totalQueries + 1)
+                        : duration,
+                    totalQueries: prev.totalQueries + 1,
+                    cacheHitRate: result.fromCache
+                        ? ((prev.cacheHitRate * prev.totalQueries + 100) / (prev.totalQueries + 1))
+                        : ((prev.cacheHitRate * prev.totalQueries) / (prev.totalQueries + 1))
+                };
+                return newStats;
+            });
+
+            setPerformanceHistory(prev => {
+                const newHistory = [...prev, { timestamp, duration }];
+                return newHistory.slice(-MAX_PERFORMANCE_HISTORY);
+            });
 
             logger.info('Companies fetched', {
                 page,
                 searchTerm,
                 count: result.items.length,
                 total: result.total,
-                duration
+                duration,
+                fromCache: result.fromCache
             });
         } catch (err) {
             const errorMessage = err.message;
@@ -197,13 +278,6 @@ const Companies = () => {
                 >
                     I feel lucky
                 </Button>
-                {performanceStats.lastFetchDuration && (
-                    <Text type="secondary">
-                        Last fetch: {performanceStats.lastFetchDuration.toFixed(2)}ms
-                        {performanceStats.averageFetchDuration &&
-                            ` (avg: ${performanceStats.averageFetchDuration.toFixed(2)}ms)`}
-                    </Text>
-                )}
             </Space>
             <Table
                 columns={connectionColumns}
@@ -216,7 +290,7 @@ const Companies = () => {
                 rowKey="id"
             />
         </div>
-    ), [handleLuckyClick, performanceStats]);
+    ), [handleLuckyClick]);
 
     // Render loading state
     if (loading && !companiesData.items.length) {
@@ -246,52 +320,84 @@ const Companies = () => {
     // Main render
     return (
         <div>
-            <Space direction="vertical" style={{ width: '100%', marginBottom: 16 }}>
+            <Space direction="vertical" style={{ width: '100%' }}>
                 <KeywordSearch
                     onSearch={setSearchText}
                     placeholder="Search companies..."
                 />
-                {performanceStats.lastFetchDuration && (
-                    <Text type="secondary">
-                        Query time: {performanceStats.lastFetchDuration.toFixed(2)}ms
-                        {performanceStats.averageFetchDuration &&
-                            ` (avg: ${performanceStats.averageFetchDuration.toFixed(2)}ms)`}
-                    </Text>
-                )}
-            </Space>
 
-            {companiesData.items.length === 0 && searchText && (
-                <Alert
-                    message="No results found"
-                    description="Try adjusting your search terms"
-                    type="info"
-                    showIcon
-                    style={{ marginBottom: 16 }}
+                <PerformanceStats
+                    stats={performanceStats}
+                    history={performanceHistory}
                 />
-            )}
 
-            <Table
-                showHeader={true}
-                rowKey="id"
-                loading={loading}
-                pagination={{
-                    current: companiesData.page,
-                    pageSize: PAGE_SIZE,
-                    total: companiesData.total,
-                    showSizeChanger: true,
-                    pageSizeOptions: ['50', '100', '250', '500'],
-                    showTotal: (total, range) => `${range[0]}-${range[1]} of ${total} items`,
-                }}
-                onChange={handleTableChange}
-                columns={companyColumns}
-                expandable={{
-                    expandedRowRender: renderConnectionsTable,
-                    rowExpandable: record => record.connections.length !== 0 && record.company !== undefined,
-                }}
-                dataSource={companiesData.items}
-                scroll={{ x: 800, y: 'calc(100vh - 300px)' }}
-                sticky
-            />
+                {dbStats && (
+                    <Card size="small" title="Database Stats" style={{ marginBottom: 16 }}>
+                        <Row gutter={16}>
+                            <Col span={6}>
+                                <Statistic
+                                    title="Total Companies"
+                                    value={dbStats.totalCompanies}
+                                />
+                            </Col>
+                            <Col span={6}>
+                                <Statistic
+                                    title="Total Connections"
+                                    value={dbStats.totalConnections}
+                                />
+                            </Col>
+                            <Col span={6}>
+                                <Statistic
+                                    title="DB Size"
+                                    value={(dbStats.dbSize / (1024 * 1024)).toFixed(2)}
+                                    suffix="MB"
+                                />
+                            </Col>
+                            <Col span={6}>
+                                <Statistic
+                                    title="Cache Size"
+                                    value={(dbStats.cacheSize / (1024 * 1024)).toFixed(2)}
+                                    suffix="MB"
+                                />
+                            </Col>
+                        </Row>
+                    </Card>
+                )}
+
+                {companiesData.items.length === 0 && searchText && (
+                    <Alert
+                        message="No results found"
+                        description="Try adjusting your search terms"
+                        type="info"
+                        showIcon
+                        style={{ marginBottom: 16 }}
+                    />
+                )}
+
+                <Table
+                    showHeader={true}
+                    rowKey="id"
+                    loading={loading}
+                    pagination={{
+                        current: companiesData.page,
+                        pageSize: PAGE_SIZE,
+                        total: companiesData.total,
+                        showSizeChanger: true,
+                        pageSizeOptions: ['50', '100', '250', '500'],
+                        showTotal: (total, range) => `${range[0]}-${range[1]} of ${total} items`,
+                    }}
+                    onChange={handleTableChange}
+                    columns={companyColumns}
+                    expandable={{
+                        expandedRowRender: renderConnectionsTable,
+                        rowExpandable: record => record.connections.length !== 0 && record.company !== undefined,
+                    }}
+                    dataSource={companiesData.items}
+                    scroll={{ x: 800, y: 'calc(100vh - 500px)' }}
+                    sticky
+                    virtual
+                />
+            </Space>
             <BackTop />
         </div>
     );

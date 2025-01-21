@@ -24,6 +24,15 @@ const CACHE_CONFIG = {
     CLEANUP_INTERVAL: 10 * 60 * 1000, // 10 minutes
 };
 
+// Performance configuration
+const PERFORMANCE_CONFIG = {
+    SLOW_QUERY_THRESHOLD: 500, // ms
+    MEMORY_WARNING_THRESHOLD: 0.8, // 80% of available memory
+    MAX_BATCH_SIZE: 1000,
+    MIN_BATCH_SIZE: 50,
+    ADAPTIVE_BATCH_MULTIPLIER: 1.2,
+};
+
 // Database schema versions
 const SCHEMA_VERSION = 2;
 
@@ -58,16 +67,20 @@ class LiSearchDatabase extends Dexie {
     constructor() {
         super('LiSearchDB');
 
-        // Optimize indexes for common queries
         this.version(1).stores({
-            companies: '++id, company, *tags, updatedAt',
-            connections: '++id, fullName, position, companyId, *tags, updatedAt',
-            positions: '++id, position, company, updatedAt',
-            cache: 'key, data, timestamp, size'
+            companies: '++id, company, *tags, updatedAt, [company+updatedAt]',
+            connections: '++id, fullName, position, companyId, *tags, updatedAt, [fullName+position]',
+            positions: '++id, position, company, updatedAt, [position+company]',
+            cache: 'key, data, timestamp, size',
+            queryStats: '++id, query, duration, timestamp, cacheHit'
         });
+
+        this.currentBatchSize = PERFORMANCE_CONFIG.MIN_BATCH_SIZE;
+        this.queryStats = new Map();
 
         this.initializeHooks();
         this.initializeCacheCleanup();
+        this.initializeMemoryMonitoring();
     }
 
     initializeCacheCleanup() {
@@ -152,46 +165,100 @@ class LiSearchDatabase extends Dexie {
         logger.debug('Cache set', { key, size });
     }
 
-    // Optimized company queries
+    initializeMemoryMonitoring() {
+        if (typeof window !== 'undefined' && window.performance && window.performance.memory) {
+            setInterval(() => this.checkMemoryUsage(), 30000);
+        }
+    }
+
+    async checkMemoryUsage() {
+        const memory = window.performance.memory;
+        const usageRatio = memory.usedJSHeapSize / memory.jsHeapSizeLimit;
+
+        if (usageRatio > PERFORMANCE_CONFIG.MEMORY_WARNING_THRESHOLD) {
+            logger.warn('High memory usage detected', {
+                used: memory.usedJSHeapSize,
+                total: memory.jsHeapSizeLimit,
+                ratio: usageRatio
+            });
+
+            // Attempt to free memory
+            await this.clearCache();
+            this.queryStats.clear();
+
+            // Reduce batch size
+            this.currentBatchSize = Math.max(
+                PERFORMANCE_CONFIG.MIN_BATCH_SIZE,
+                Math.floor(this.currentBatchSize / PERFORMANCE_CONFIG.ADAPTIVE_BATCH_MULTIPLIER)
+            );
+        }
+    }
+
     async getCompaniesPaginated(page = 1, pageSize = 100, searchTerm = '', options = {}) {
         const cacheKey = `companies_${page}_${pageSize}_${searchTerm}_${JSON.stringify(options)}`;
+        const queryStartTime = performance.now();
+        let cacheHit = false;
 
         try {
             // Try cache first
             const cached = await this.getCached(cacheKey);
-            if (cached) return cached;
+            if (cached) {
+                cacheHit = true;
+                this.recordQueryStats(cacheKey, performance.now() - queryStartTime, true);
+                return { ...cached, fromCache: true };
+            }
 
-            // Build query
+            // Build optimized query
             let query = this.companies;
 
             if (searchTerm) {
                 const searchLower = searchTerm.toLowerCase();
-                // Use compound index if available
-                if (options.tags) {
-                    query = query
-                        .where('tags')
-                        .anyOf(options.tags)
-                        .filter(company =>
-                            company.company.toLowerCase().includes(searchLower)
-                        );
-                } else {
-                    query = query.filter(company =>
-                        company.company.toLowerCase().includes(searchLower)
-                    );
+                const words = searchLower.split(/\s+/).filter(w => w.length > 2);
+
+                if (words.length > 0) {
+                    // Use compound index if possible
+                    if (options.tags) {
+                        query = query
+                            .where('tags')
+                            .anyOf(words)
+                            .filter(company =>
+                                company.company.toLowerCase().includes(searchLower)
+                            );
+                    } else {
+                        // Try to use the most selective word for initial filtering
+                        const mostSelectiveWord = await this.findMostSelectiveWord(words);
+                        query = query
+                            .where('company')
+                            .startsWithIgnoreCase(mostSelectiveWord)
+                            .filter(company =>
+                                company.company.toLowerCase().includes(searchLower)
+                            );
+                    }
                 }
             }
 
-            // Add sorting
+            // Add sorting with index optimization
             if (options.sortBy) {
-                query = query.orderBy(options.sortBy);
+                const sortField = options.sortBy;
+                const sortOrder = options.sortOrder === 'descend' ? 'prev' : 'next';
+
+                // Use compound index if available
+                if (sortField === 'company') {
+                    query = query.orderBy('[company+updatedAt]')[sortOrder];
+                } else {
+                    query = query.orderBy(sortField)[sortOrder];
+                }
             }
 
             const offset = (page - 1) * pageSize;
 
-            // Execute count and data queries in parallel
+            // Execute count and data queries in parallel with timeout
             const [total, items] = await Promise.all([
-                query.count(),
-                query.offset(offset).limit(pageSize).toArray()
+                this.executeWithTimeout(query.count(), 'count'),
+                this.executeWithTimeout(
+                    query.offset(offset).limit(pageSize).toArray(),
+                    'fetch'
+                )
             ]);
 
             const result = {
@@ -199,17 +266,94 @@ class LiSearchDatabase extends Dexie {
                 total,
                 page,
                 pageSize,
-                totalPages: Math.ceil(total / pageSize)
+                totalPages: Math.ceil(total / pageSize),
+                fromCache: false
             };
 
             // Cache the result
             await this.setCache(cacheKey, result);
 
+            const duration = performance.now() - queryStartTime;
+            this.recordQueryStats(cacheKey, duration, false);
+
+            if (duration > PERFORMANCE_CONFIG.SLOW_QUERY_THRESHOLD) {
+                logger.warn('Slow query detected', {
+                    duration,
+                    searchTerm,
+                    page,
+                    pageSize
+                });
+            }
+
             return result;
         } catch (error) {
-            logger.error('Failed to fetch companies', { error: error.message });
-            throw new DatabaseError('Failed to fetch companies: ' + error.message);
+            const duration = performance.now() - queryStartTime;
+            logger.error('Query failed', {
+                error: error.message,
+                duration,
+                searchTerm,
+                page,
+                pageSize
+            });
+            throw error;
         }
+    }
+
+    async executeWithTimeout(promise, operation, timeout = 5000) {
+        return Promise.race([
+            promise,
+            new Promise((_, reject) =>
+                setTimeout(() => reject(new Error(`${operation} timeout`)), timeout)
+            )
+        ]);
+    }
+
+    async findMostSelectiveWord(words) {
+        const counts = await Promise.all(
+            words.map(async word => ({
+                word,
+                count: await this.companies
+                    .where('company')
+                    .startsWithIgnoreCase(word)
+                    .count()
+            }))
+        );
+
+        return counts.reduce((a, b) => a.count < b.count ? a : b).word;
+    }
+
+    recordQueryStats(query, duration, cacheHit) {
+        // Record to IndexedDB
+        this.queryStats.add({
+            query,
+            duration,
+            timestamp: Date.now(),
+            cacheHit
+        });
+
+        // Update in-memory stats
+        const stats = this.queryStats.get(query) || {
+            count: 0,
+            totalDuration: 0,
+            cacheHits: 0
+        };
+
+        stats.count++;
+        stats.totalDuration += duration;
+        if (cacheHit) stats.cacheHits++;
+
+        this.queryStats.set(query, stats);
+    }
+
+    async getQueryStats() {
+        const stats = await this.queryStats.toArray();
+        const aggregated = {
+            totalQueries: stats.length,
+            averageDuration: stats.reduce((acc, s) => acc + s.duration, 0) / stats.length,
+            cacheHitRate: stats.filter(s => s.cacheHit).length / stats.length * 100,
+            slowQueries: stats.filter(s => s.duration > PERFORMANCE_CONFIG.SLOW_QUERY_THRESHOLD).length
+        };
+        return aggregated;
     }
 
     // Bulk operations with optimized batching
