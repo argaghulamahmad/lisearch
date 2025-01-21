@@ -1,60 +1,83 @@
 import React, { Suspense } from "react";
-import {Layout, Space, Tabs, Typography, Spin} from "antd";
+import { Layout, Space, Tabs, Typography, Spin } from "antd";
 import Stats from "./components/Stats";
 
-// Lazy load components
+// Lazy loaded components
 const Connections = React.lazy(() => import("./pages/Connections"));
 const Companies = React.lazy(() => import("./pages/Companies"));
 const Positions = React.lazy(() => import("./pages/Positions"));
 const Uploader = React.lazy(() => import("./pages/Uploader"));
 const Config = React.lazy(() => import("./pages/Config"));
 
-const {Header, Content} = Layout;
-const {TabPane} = Tabs;
-const {Title} = Typography;
+const { Header, Content } = Layout;
+const { TabPane } = Tabs;
+const { Title } = Typography;
+
+// Styles
+const styles = {
+    layout: {
+        minHeight: "100vh"
+    },
+    header: {
+        background: "#fff",
+        padding: 0
+    },
+    title: {
+        margin: "0",
+        textAlign: "center"
+    },
+    content: {
+        width: "100%",
+        padding: "20px",
+        height: "100%"
+    },
+    tabs: {
+        width: "100%"
+    },
+    loadingContainer: {
+        textAlign: 'center',
+        padding: '20px'
+    }
+};
+
+// Tab configuration
+const TAB_CONFIG = [
+    { key: "1", title: "Connections", component: Connections },
+    { key: "2", title: "Companies", component: Companies },
+    { key: "3", title: "Positions", component: Positions },
+    { key: "4", title: "Upload", component: Uploader },
+    { key: "5", title: "Config", component: Config }
+];
 
 // Loading fallback component
 const LoadingFallback = () => (
-    <div style={{ textAlign: 'center', padding: '20px' }}>
+    <div style={styles.loadingContainer}>
         <Spin size="large" />
     </div>
 );
 
+// Header component
+const AppHeader = () => (
+    <Header style={styles.header}>
+        <Title level={1} style={styles.title}>Li Search</Title>
+    </Header>
+);
+
 function App() {
     return (
-        <Layout style={{minHeight: "100vh"}}>
-            <Header style={{background: "#fff", padding: 0}}>
-                <Title level={1} style={{margin: "0", textAlign: "center"}}>Li Search</Title>
-            </Header>
+        <Layout style={styles.layout}>
+            <AppHeader />
             <Content>
-                <Space direction="vertical" style={{width: "100%", padding: "20px", height: "100%"}}>
-                    <Stats/>
-                    <Tabs defaultActiveKey="1" style={{width: "100%"}} destroyInactiveTabPane>
-                        <TabPane tab="Connections" key="1">
-                            <Suspense fallback={<LoadingFallback />}>
-                                <Connections/>
-                            </Suspense>
-                        </TabPane>
-                        <TabPane tab="Companies" key="2">
-                            <Suspense fallback={<LoadingFallback />}>
-                                <Companies/>
-                            </Suspense>
-                        </TabPane>
-                        <TabPane tab="Positions" key="3">
-                            <Suspense fallback={<LoadingFallback />}>
-                                <Positions/>
-                            </Suspense>
-                        </TabPane>
-                        <TabPane tab="Upload" key="4">
-                            <Suspense fallback={<LoadingFallback />}>
-                                <Uploader/>
-                            </Suspense>
-                        </TabPane>
-                        <TabPane tab="Config" key="5">
-                            <Suspense fallback={<LoadingFallback />}>
-                                <Config/>
-                            </Suspense>
-                        </TabPane>
+                <Space direction="vertical" style={styles.content}>
+                    <Stats />
+                    <Tabs defaultActiveKey="1" style={styles.tabs} destroyInactiveTabPane>
+                        {TAB_CONFIG.map(({ key, title, component: Component }) => (
+                            <TabPane tab={title} key={key}>
+                                <Suspense fallback={<LoadingFallback />}>
+                                    <Component />
+                                </Suspense>
+                            </TabPane>
+                        ))}
                     </Tabs>
                 </Space>
             </Content>
