@@ -1,6 +1,7 @@
-import React, { Suspense } from "react";
+import React, { Suspense, useState } from "react";
 import { Layout, Space, Tabs, Typography, Spin } from "antd";
 import Stats from "./components/Stats";
+import ErrorBoundary from "./components/ErrorBoundary";
 
 // Lazy loaded components
 const Connections = React.lazy(() => import("./pages/Connections"));
@@ -64,18 +65,27 @@ const AppHeader = () => (
 );
 
 function App() {
+    const [activeKey, setActiveKey] = useState("1");
+
     return (
         <Layout style={styles.layout}>
             <AppHeader />
             <Content>
                 <Space direction="vertical" style={styles.content}>
                     <Stats />
-                    <Tabs defaultActiveKey="1" style={styles.tabs} destroyInactiveTabPane>
+                    <Tabs
+                        activeKey={activeKey}
+                        onChange={setActiveKey}
+                        style={styles.tabs}
+                        destroyInactiveTabPane
+                    >
                         {TAB_CONFIG.map(({ key, title, component: Component }) => (
                             <TabPane tab={title} key={key}>
-                                <Suspense fallback={<LoadingFallback />}>
-                                    <Component />
-                                </Suspense>
+                                <ErrorBoundary>
+                                    <Suspense fallback={<LoadingFallback />}>
+                                        <Component />
+                                    </Suspense>
+                                </ErrorBoundary>
                             </TabPane>
                         ))}
                     </Tabs>
@@ -85,4 +95,4 @@ function App() {
     );
 }
 
-export default React.memo(App);
+export default App;
