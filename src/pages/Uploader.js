@@ -5,66 +5,46 @@ import db from "../db";
 
 const BATCH_SIZE = 1000;
 
+const useCSVWorker = () => {
+    const workerRef = useRef(null);
+
+    const initializeWorker = useCallback((onProgress, onComplete, onError) => {
+        workerRef.current = new Worker(new URL('../workers/csvWorker.js', import.meta.url));
+        
+        workerRef.current.onmessage = (e) => {
+            const { type, data, error } = e.data;
+            if (type === 'progress') {
+                onProgress(data);
+            } else if (type === 'complete') {
+                onComplete(data);
+            } else if (type === 'error') {
+                onError(error);
+            }
+        };
+
+        return () => {
+            if (workerRef.current) {
+                workerRef.current.terminate();
+                workerRef.current = null;
+            }
+        };
+    }, []);
+
+    const postMessage = useCallback((data) => {
+        if (workerRef.current) {
+            workerRef.current.postMessage(data);
+        }
+    }, []);
+
+    return { initializeWorker, postMessage };
+};
+
 const Uploader = React.memo(() => {
     const { readString } = usePapaParse();
     const [csvData, setCsvData] = useState("");
     const [processing, setProcessing] = useState(false);
     const [progress, setProgress] = useState(0);
-    const workerRef = useRef(null);
-
-    const generateCompaniesDataList = useCallback(connections => {
-        const companiesMap = new Map();
-        connections.forEach(({ company, firstName, lastName, position }) => {
-            if (!company) return;
-
-            if (!companiesMap.has(company)) {
-                companiesMap.set(company, { company, connections: [] });
-            }
-            companiesMap.get(company).connections.push({
-                fullName: `${firstName} ${lastName}`,
-                position
-            });
-        });
-        return Array.from(companiesMap.values());
-    }, []);
-
-    const generatePositionsDataList = useCallback(connections => {
-        const positionsMap = new Map();
-        connections.forEach(({ position, company }) => {
-            if (!position || !company) return;
-
-            const title = `${position} at ${company}`;
-            positionsMap.set(title, { title, position, company });
-        });
-        return Array.from(positionsMap.values());
-    }, []);
-
-    const generateConnectionsDataList = useCallback(csv => {
-        const csvKeys = csv.data.shift();
-        const camelCaseKeys = csvKeys.map(key =>
-            key.replace(/\s(.)/g, $1 => $1.toUpperCase())
-               .replace(/\s/g, "")
-               .replace(/^(.)/, $1 => $1.toLowerCase())
-        );
-
-        return csv.data.reduce((accumulator, currentValue) => {
-            const [firstName, lastName, emailAddress, company, position, connectedOn] = currentValue;
-            if (firstName && lastName) {
-                const connection = {
-                    ...Object.fromEntries(camelCaseKeys.map(key => [key, ""])),
-                    firstName,
-                    lastName,
-                    emailAddress,
-                    company,
-                    position,
-                    connectedOn,
-                    fullName: `${firstName} ${lastName}`,
-                };
-                return [...accumulator, connection];
-            }
-            return accumulator;
-        }, []);
-    }, []);
+    const { initializeWorker, postMessage } = useCSVWorker();
 
     const processBatch = useCallback(async (items, tableName, currentCount, totalCount) => {
         for (let i = 0; i < items.length; i += BATCH_SIZE) {
@@ -97,16 +77,9 @@ const Uploader = React.memo(() => {
                 throw new Error("CSV data is empty or invalid.");
             }
 
-            // Initialize Web Worker
-            workerRef.current = new Worker(new URL('../workers/csvWorker.js', import.meta.url));
-
-            // Handle worker messages
-            workerRef.current.onmessage = async (e) => {
-                const { type, data, error } = e.data;
-
-                if (type === 'progress') {
-                    setProgress(data);
-                } else if (type === 'complete') {
+            const cleanup = initializeWorker(
+                (progress) => setProgress(progress),
+                async (data) => {
                     const { connections, companies, positions } = data;
                     const totalItems = connections.length + companies.length + positions.length;
 
@@ -133,14 +106,15 @@ const Uploader = React.memo(() => {
                     } catch (error) {
                         throw error;
                     }
-                } else if (type === 'error') {
+                },
+                (error) => {
                     throw new Error(error);
                 }
-            };
+            );
 
-            // Start processing
-            workerRef.current.postMessage({ csv: result });
+            postMessage({ csv: result });
 
+            return cleanup;
         } catch (error) {
             console.error(error);
             notification.error({
@@ -151,12 +125,8 @@ const Uploader = React.memo(() => {
         } finally {
             setProcessing(false);
             setProgress(0);
-            if (workerRef.current) {
-                workerRef.current.terminate();
-                workerRef.current = null;
-            }
         }
-    }, [csvData, readString, processBatch]);
+    }, [csvData, readString, processBatch, initializeWorker, postMessage]);
 
     const textAreaStyle = useMemo(() => ({
         width: "100%",
@@ -165,15 +135,6 @@ const Uploader = React.memo(() => {
         padding: "8px",
         resize: "vertical"
     }), []);
-
-    // Cleanup worker on unmount
-    React.useEffect(() => {
-        return () => {
-            if (workerRef.current) {
-                workerRef.current.terminate();
-            }
-        };
-    }, []);
 
     return (
         <div>
